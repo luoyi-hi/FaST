@@ -1,0 +1,48 @@
+#### Windowing params #########################################################
+window: 96
+horizon: 672
+dataset_name: sd
+
+#### Reservoir params #########################################################
+reservoir_size: 16
+reservoir_layers: 4  # 4
+leaking_rate: 1  # 0.8
+spectral_radius: 0.99
+density: 0.7
+alpha_decay: True
+preprocess_exogenous: True
+keep_raw: True
+
+#### SGP params ##############################################################
+bidirectional: False
+receptive_field: 2
+undirected: False
+add_self_loops: False
+global_attr: True
+
+#### Performance params #######################################################
+iid_sampling: True
+sgp_preprocessing: False
+workers: 0
+batch_size: 64
+batch_inference: 64
+
+#### Training params ##########################################################
+l2_reg: 0.
+use_lr_schedule: True
+lr_milestones: [60, 80]  # [100, 150]
+lr: 0.004  # 0.0035
+epochs: 100
+patience: 100
+batches_epoch: 600
+workers: 2
+
+#### Model params #############################################################
+emb_size: 32
+hidden_size: 960
+mlp_size: 256
+n_layers: 2
+dropout: 0.
+positional_encoding: True
+resnet: true
+fully_connected: False
