@@ -33,7 +33,9 @@ NORM_EACH_CHANNEL = regular_settings[
 RESCALE = regular_settings["RESCALE"]  # Whether to rescale the data
 NULL_VAL = regular_settings["NULL_VAL"]  # Null value in the data
 # Model architecture and parameters
-PREPROCESSED_FILE = "checkpoints/BigSTPreprocess/sd_100_672_96/3e6618e9f3bf33f7f947fe8d0401e2d3/BigSTPreprocess_best_val_MAE.pt"
+PREPROCESSED_FILE = (
+    "checkpoints/BigSTPreprocess/sd_100_672_96/BigSTPreprocess_best_val_MAE.pt"
+)
 MODEL_ARCH = BigST
 
 adj_mx, _ = load_adj("datasets/" + DATA_NAME + "/adj_mx.pkl", "doubletransition")
