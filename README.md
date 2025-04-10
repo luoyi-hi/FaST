@@ -215,7 +215,7 @@ python experiments/train_seed.py -c baselines/GWNet/sd_96_672.py -g 0
 # SGP
 # Please refer to: ‘https://github.com/Graph-Machine-Learning-Group/sgp’ to configure the relevant environment
 # Switch to the sgp directory
-cd main-master/baselines/sgp-main
+cd baselines/sgp-main
 # SGP on SD dataset
 python experiments/run_traffic_sgps_sd_96_48.py 
 python experiments/run_traffic_sgps_sd_96_96.py 
@@ -225,7 +225,7 @@ python experiments/run_traffic_sgps_sd_96_672.py
 # RPMixer
 # Please refer to: ‘https://sites.google.com/view/rpmixer’ to configure the relevant environment
 # Switch to the RPMixer directory
-cd main-master/baselines/RPMixer
+cd baselines/RPMixer
 # RPMixer on SD dataset
 python sd_96_48.py
 python sd_96_96.py
