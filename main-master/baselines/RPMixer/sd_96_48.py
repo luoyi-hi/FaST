@@ -32,7 +32,7 @@ def main():
     exp_setup = []
 
     data_names = [
-        "gla_his_2019_agg_48",
+        "sd_his_2019_agg_48",
     ]
 
     method_names = [
