@@ -172,6 +172,21 @@ python experiments/train_seed.py -c baselines/CycleNet/ca_96_672.py -g 0
 python experiments/train_seed.py -c baselines/DCRNN/sd_96_48.py -g 0
 python experiments/train_seed.py -c baselines/DCRNN/sd_96_96.py -g 0
 
+# STDMAE
+# STDMAE on SD dataset
+python experiments/train_seed.py -c baselines/STDMAE/SMAE_sd_96_48.py -g 0
+python experiments/train_seed.py -c baselines/STDMAE/SMAE_sd_96_96.py -g 0
+python experiments/train_seed.py -c baselines/STDMAE/SMAE_sd_96_192.py -g 0
+python experiments/train_seed.py -c baselines/STDMAE/SMAE_sd_96_672.py -g 0
+python experiments/train_seed.py -c baselines/STDMAE/TMAE_sd_96_48.py -g 0
+python experiments/train_seed.py -c baselines/STDMAE/TMAE_sd_96_96.py -g 0
+python experiments/train_seed.py -c baselines/STDMAE/TMAE_sd_96_192.py -g 0
+python experiments/train_seed.py -c baselines/STDMAE/TMAE_sd_96_672.py -g 0
+python experiments/train_seed.py -c baselines/STDMAE/STDMAE_sd_96_48.py -g 0
+python experiments/train_seed.py -c baselines/STDMAE/STDMAE_sd_96_96.py -g 0
+python experiments/train_seed.py -c baselines/STDMAE/STDMAE_sd_96_192.py -g 0
+python experiments/train_seed.py -c baselines/STDMAE/STDMAE_sd_96_672.py -g 0
+
 # BigST
 # BigST on SD dataset
 python experiments/train_seed.py -c baselines/BigST/sd_96_48.py -g 0
