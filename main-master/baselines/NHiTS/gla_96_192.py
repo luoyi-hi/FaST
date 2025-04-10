@@ -142,4 +142,4 @@ CFG.TEST.DATA.BATCH_SIZE = 64
 CFG.EVAL = EasyDict()
 
 # Evaluation parameters
-CFG.EVAL.USE_GPU = True  # Whether to use GPU for evaluation. Default: True
+CFG.EVAL.USE_GPU = False  # Whether to use GPU for evaluation. Default: True

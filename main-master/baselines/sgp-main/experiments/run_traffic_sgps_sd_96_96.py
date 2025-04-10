@@ -48,14 +48,8 @@ def get_model_class(model_str):
 
 
 def get_dataset(dataset_name):
-    if dataset_name == "la":
-        dataset = MetrLA()
-    elif dataset_name == "sd":
+    if dataset_name == "sd":
         dataset = Sd()
-    elif dataset_name == "bay":
-        dataset = PemsBay(mask_zeros=True)
-    else:
-        raise ValueError(f"Dataset {dataset_name} not available.")
     return dataset
 
 

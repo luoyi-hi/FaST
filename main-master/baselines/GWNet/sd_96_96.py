@@ -132,7 +132,7 @@ CFG.TRAIN.LR_SCHEDULER.TYPE = "MultiStepLR"
 CFG.TRAIN.LR_SCHEDULER.PARAM = {"milestones": [1, 50], "gamma": 0.5}
 # Train data loader settings
 CFG.TRAIN.DATA = EasyDict()
-CFG.TRAIN.DATA.BATCH_SIZE = 64
+CFG.TRAIN.DATA.BATCH_SIZE = 32
 CFG.TRAIN.DATA.SHUFFLE = True
 # Gradient clipping settings
 CFG.TRAIN.CLIP_GRAD_PARAM = {"max_norm": 5.0}
@@ -141,13 +141,13 @@ CFG.TRAIN.CLIP_GRAD_PARAM = {"max_norm": 5.0}
 CFG.VAL = EasyDict()
 CFG.VAL.INTERVAL = 1
 CFG.VAL.DATA = EasyDict()
-CFG.VAL.DATA.BATCH_SIZE = 64
+CFG.VAL.DATA.BATCH_SIZE = 32
 
 ############################## Test Configuration ##############################
 CFG.TEST = EasyDict()
 CFG.TEST.INTERVAL = 200
 CFG.TEST.DATA = EasyDict()
-CFG.TEST.DATA.BATCH_SIZE = 64
+CFG.TEST.DATA.BATCH_SIZE = 32
 
 ############################## Evaluation Configuration ##############################
 

@@ -71,7 +71,7 @@ MODEL_PARAM = {
     },
 }
 
-NUM_EPOCHS = 99
+NUM_EPOCHS = 100
 
 ############################## General Configuration ##############################
 CFG = EasyDict()
