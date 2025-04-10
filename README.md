@@ -212,7 +212,6 @@ python experiments/train_seed.py -c baselines/GWNet/sd_96_96.py -g 0
 python experiments/train_seed.py -c baselines/GWNet/sd_96_192.py -g 0
 python experiments/train_seed.py -c baselines/GWNet/sd_96_672.py -g 0
 
-
 # SGP
 # Please refer to: ‘https://github.com/Graph-Machine-Learning-Group/sgp’ to configure the relevant environment
 # Switch to the sgp directory
