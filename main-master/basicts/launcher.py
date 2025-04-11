@@ -79,7 +79,7 @@ def evaluation_func(
             cfg["DATASET"]["PARAM"]["output_len"] == 192
             or cfg["DATASET"]["PARAM"]["output_len"] == 672
         ):
-            runner.test_iters_4OOM(cfg=cfg)
+            runner.Test4OOM(cfg=cfg)
         else:
             # start the evaluation pipeline
             runner.test_pipeline(cfg=cfg, save_metrics=False, save_results=False)
