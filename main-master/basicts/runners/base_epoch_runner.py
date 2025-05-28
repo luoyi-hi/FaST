@@ -775,10 +775,15 @@ class BaseEpochRunner(metaclass=ABCMeta):
             )
             self.logger.info("Evaluating the best model on the test set.")
             self.load_model(ckpt_path=best_model_path, strict=True)
-            self.test_pipeline(
-                cfg=cfg, train_epoch=train_epoch, save_metrics=True, save_results=True
-            )
-
+            if (cfg["DATASET"]["NAME"] == "gla" or cfg["DATASET"]["NAME"] == "ca") and (
+            cfg["DATASET"]["PARAM"]["output_len"] == 192
+            or cfg["DATASET"]["PARAM"]["output_len"] == 672):
+                self.Test4OOM(cfg=cfg)
+            else:
+                # start the evaluation pipeline
+                self.test_pipeline(
+                cfg=cfg, train_epoch=train_epoch, save_metrics=True, save_results=False
+                )
     # endregion Hook Functions
 
     # region Misc Functions
