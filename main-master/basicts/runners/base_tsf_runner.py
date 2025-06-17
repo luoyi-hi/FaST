@@ -11,7 +11,9 @@ from easydict import EasyDict
 from easytorch.utils import master_only
 from tqdm import tqdm
 
-from ..metrics import masked_mae, masked_mape, masked_mse, masked_rmse, masked_wape
+from ..metrics import masked_mae, masked_mape, masked_mse, masked_rmse
+from ..metrics import masked_mae_bts, masked_mape_bts, masked_mse_bts, masked_rmse_bts 
+from ..metrics import masked_ape,masked_ae,masked_se
 from .base_epoch_runner import BaseEpochRunner
 
 
@@ -69,14 +71,38 @@ class BaseTimeSeriesForecastingRunner(BaseEpochRunner):
         self.loss = cfg["TRAIN"]["LOSS"]
 
         # define metrics
+        # self.metrics = cfg.get("METRICS", {}).get(
+        #     "FUNCS",
+        #     {
+        #         "MAE": #masked_mae,
+        #         "RMSE": #masked_rmse,
+        #         "MAPE": #masked_mape,
+        #         "WAPE": #masked_wape,
+        #         "MSE": #masked_mse,
+        #     },
+        # )
+        
+        self.metrics_basicts = {
+                "MAEbts": masked_mae_bts,
+                "RMSEbts": masked_rmse_bts,
+                "MAPEbts": masked_mape_bts,
+                # "MSEbts": masked_mse_bts,
+            }
+        
+        self.metrics_zihao = {
+                "MAEzh": masked_mae,
+                "RMSEzh": masked_rmse,
+                "MAPEzh": masked_mape,
+                # "MSEzh": masked_mse,
+            }
+        
         self.metrics = cfg.get("METRICS", {}).get(
             "FUNCS",
             {
-                "MAE": masked_mae,
-                "RMSE": masked_rmse,
-                "MAPE": masked_mape,
-                "WAPE": masked_wape,
-                "MSE": masked_mse,
+                "MAE": masked_ae,#masked_mae,
+                "RMSE": masked_se,#masked_rmse,
+                "MAPE": masked_ape,#masked_mape,
+                # "MSE": masked_se,#masked_mse,
             },
         )
         self.target_metrics = cfg.get("METRICS", {}).get("TARGET", "loss")
@@ -162,6 +188,14 @@ class BaseTimeSeriesForecastingRunner(BaseEpochRunner):
         super().init_training(cfg)
         self.count_parameters()
 
+        self.register_epoch_meter_bts("train/lossbts", "train", "{:.4f}")
+        for key in self.metrics_basicts:
+            self.register_epoch_meter_bts(f"train/{key}", "train", "{:.4f}")
+
+        self.register_epoch_meter_zh("train/losszh", "train", "{:.4f}")
+        for key in self.metrics_zihao:
+            self.register_epoch_meter_zh(f"train/{key}", "train", "{:.4f}")
+
         self.register_epoch_meter("train/loss", "train", "{:.4f}")
         for key in self.metrics:
             self.register_epoch_meter(f"train/{key}", "train", "{:.4f}")
@@ -174,6 +208,18 @@ class BaseTimeSeriesForecastingRunner(BaseEpochRunner):
         """
 
         super().init_validation(cfg)
+        # self.register_epoch_meter("val/loss", "val", "{:.4f}")
+        # for key in self.metrics:
+        #     self.register_epoch_meter(f"val/{key}", "val", "{:.4f}")
+            
+        self.register_epoch_meter_bts("val/lossbts", "val", "{:.4f}")
+        for key in self.metrics_basicts:
+            self.register_epoch_meter_bts(f"val/{key}", "val", "{:.4f}")
+
+        self.register_epoch_meter_zh("val/losszh", "val", "{:.4f}")
+        for key in self.metrics_zihao:
+            self.register_epoch_meter_zh(f"val/{key}", "val", "{:.4f}")
+
         self.register_epoch_meter("val/loss", "val", "{:.4f}")
         for key in self.metrics:
             self.register_epoch_meter(f"val/{key}", "val", "{:.4f}")
@@ -190,9 +236,34 @@ class BaseTimeSeriesForecastingRunner(BaseEpochRunner):
             self.need_setup_graph = False
 
         super().init_test(cfg)
+        # self.register_epoch_meter("test/loss", "test", "{:.4f}")
+        # for key in self.metrics:
+        #     self.register_epoch_meter(f"test/{key}", "test", "{:.4f}")
+
+        self.register_epoch_meter_bts("test/lossbts", "test", "{:.4f}")
+        for key in self.metrics_basicts:
+            self.register_epoch_meter_bts(f"test/{key}", "test", "{:.4f}")
+
+        self.register_epoch_meter_zh("test/losszh", "test", "{:.4f}")
+        for key in self.metrics_zihao:
+            self.register_epoch_meter_zh(f"test/{key}", "test", "{:.4f}")
+
         self.register_epoch_meter("test/loss", "test", "{:.4f}")
         for key in self.metrics:
             self.register_epoch_meter(f"test/{key}", "test", "{:.4f}")
+        
+        # Noiter 如果要全量，需要放出来
+        # self.register_epoch_meter_bts("test-noiter/lossbts", "test", "{:.4f}")
+        # for key in self.metrics_basicts:
+        #     self.register_epoch_meter_bts(f"test-noiter/{key}", "test", "{:.4f}")
+
+        # self.register_epoch_meter_zh("test-noiter/losszh", "test", "{:.4f}")
+        # for key in self.metrics_zihao:
+        #     self.register_epoch_meter_zh(f"test-noiter/{key}", "test", "{:.4f}")
+
+        # self.register_epoch_meter("test-noiter/loss", "test", "{:.4f}")
+        # for key in self.metrics:
+        #     self.register_epoch_meter(f"test-noiter/{key}", "test", "{:.4f}")
 
     def build_train_dataset(self, cfg: Dict):
         """Build the training dataset.
@@ -420,11 +491,25 @@ class BaseTimeSeriesForecastingRunner(BaseEpochRunner):
             ]
             forward_return["target"] = forward_return["target"][:, :cl_length, :, :]
         loss = self.metric_forward(self.loss, forward_return)
+        
+        loss_bts = self.metric_forward(self.loss, forward_return)
+        loss_zh = self.metric_forward(self.loss, forward_return)
+        self.update_epoch_meter_bts("train/lossbts", loss_bts.item())
+        self.update_epoch_meter_zh("train/losszh", loss_zh.item())
         self.update_epoch_meter("train/loss", loss.item())
 
-        for metric_name, metric_func in self.metrics.items():
+        for metric_name, metric_func in self.metrics_basicts.items():
             metric_item = self.metric_forward(metric_func, forward_return)
-            self.update_epoch_meter(f"train/{metric_name}", metric_item.item())
+            self.update_epoch_meter_bts(f"train/{metric_name}", metric_item.item())
+
+        for metric_name, metric_func in self.metrics_zihao.items():
+            metric_item = self.metric_forward(metric_func, forward_return)
+            self.update_epoch_meter_zh(f"train/{metric_name}", metric_item.item())
+
+        for metric_name, metric_func in self.metrics.items(): 
+            value_item,num_item = self.metric_forward(metric_func, forward_return)
+            self.update_epoch_meter(f"train/{metric_name}", value_item.item(),num_item.item())
+            
         return loss
 
     def val_iters(self, iter_index: int, data: Union[torch.Tensor, Tuple]):
@@ -439,22 +524,50 @@ class BaseTimeSeriesForecastingRunner(BaseEpochRunner):
             data=data, epoch=None, iter_num=iter_index, train=False
         )
         loss = self.metric_forward(self.loss, forward_return)
+        
+        loss_bts = self.metric_forward(self.loss, forward_return)
+        loss_zh = self.metric_forward(self.loss, forward_return)
+        self.update_epoch_meter_bts("val/lossbts", loss_bts.item())
+        self.update_epoch_meter_zh("val/losszh", loss_zh.item())
         self.update_epoch_meter("val/loss", loss.item())
 
-        for metric_name, metric_func in self.metrics.items():
+        for metric_name, metric_func in self.metrics_basicts.items():
             metric_item = self.metric_forward(metric_func, forward_return)
-            self.update_epoch_meter(f"val/{metric_name}", metric_item.item())
+            self.update_epoch_meter_bts(f"val/{metric_name}", metric_item.item())
+
+        for metric_name, metric_func in self.metrics_zihao.items():
+            metric_item = self.metric_forward(metric_func, forward_return)
+            self.update_epoch_meter_zh(f"val/{metric_name}", metric_item.item())
+
+        for metric_name, metric_func in self.metrics.items():
+            value_item,num_item = metric_item = self.metric_forward(metric_func, forward_return)
+            self.update_epoch_meter(f"val/{metric_name}", value_item.item(), num_item.item())  
 
     def test_iters_4OOM(self, iter_index: int, data: Union[torch.Tensor, Tuple]):
         forward_return = self.forward(
             data=data, epoch=None, iter_num=iter_index, train=False
         )
         loss = self.metric_forward(self.loss, forward_return)
+        
+        loss_bts = self.metric_forward(self.loss, forward_return)
+        loss_zh = self.metric_forward(self.loss, forward_return)
+        self.update_epoch_meter_bts("test/lossbts", loss_bts.item())
+        self.update_epoch_meter_zh("test/losszh", loss_zh.item())
         self.update_epoch_meter("test/loss", loss.item())
 
-        for metric_name, metric_func in self.metrics.items():
+        for metric_name, metric_func in self.metrics_basicts.items():
             metric_item = self.metric_forward(metric_func, forward_return)
-            self.update_epoch_meter(f"test/{metric_name}", metric_item.item())
+            self.update_epoch_meter_bts(f"test/{metric_name}", metric_item.item())
+
+        for metric_name, metric_func in self.metrics_zihao.items():
+            metric_item = self.metric_forward(metric_func, forward_return)
+            self.update_epoch_meter_zh(f"test/{metric_name}", metric_item.item())
+            
+        for metric_name, metric_func in self.metrics.items():
+            # metric_item = self.metric_forward(metric_func, forward_return)
+            # self.update_epoch_meter(f"test/{metric_name}", metric_item.item())
+            value_item,num_item = metric_item = self.metric_forward(metric_func, forward_return)
+            self.update_epoch_meter(f"test/{metric_name}", value_item.item(), num_item.item())
 
     def compute_evaluation_metrics(self, returns_all: Dict):
         """Compute metrics for evaluating model performance during the test process.
@@ -463,6 +576,8 @@ class BaseTimeSeriesForecastingRunner(BaseEpochRunner):
             returns_all (Dict): Must contain keys: inputs, prediction, target.
         """
 
+        # print("@@@@@1")
+
         metrics_results = {}
         for i in self.evaluation_horizons:
             pred = returns_all["prediction"][:, i, :, :]
@@ -470,24 +585,44 @@ class BaseTimeSeriesForecastingRunner(BaseEpochRunner):
 
             metrics_results[f"horizon_{i + 1}"] = {}
             metric_repr = ""
+            
+            # print("@@@@@2")
+            
             for metric_name, metric_func in self.metrics.items():
                 if metric_name.lower() == "mase":
                     continue  # MASE needs to be calculated after all horizons
-                metric_item = self.metric_forward(
-                    metric_func, {"prediction": pred, "target": real}
-                )
-                metric_repr += f", Test {metric_name}: {metric_item.item():.4f}"
-                metrics_results[f"horizon_{i + 1}"][metric_name] = metric_item.item()
+                # metric_item = self.metric_forward(metric_func, {"prediction": pred, "target": real})
+                # metric_repr += f", Test {metric_name}: {metric_item.item():.4f}"
+                # metrics_results[f"horizon_{i + 1}"][metric_name] = metric_item.item()
+                
+                                
+
+                value_item,num_item = self.metric_forward(metric_func, {"prediction": pred, "target": real})
+                metric_repr += f", Test {metric_name}: {value_item.item()/num_item.item():.4f}"
+                metrics_results[f"horizon_{i + 1}"][metric_name] = value_item.item()/num_item.item()
+                
             self.logger.info(
                 f"Evaluate best model on test data for horizon {i + 1}{metric_repr}"
             )
 
+        # print("@@@@@3")
+        
+        for metric_name, metric_func in self.metrics_basicts.items():
+            metric_item = self.metric_forward(metric_func, returns_all)
+            self.update_epoch_meter_bts(f"test-noiter/{metric_name}", metric_item.item())
+
+        for metric_name, metric_func in self.metrics_zihao.items():
+            metric_item = self.metric_forward(metric_func, returns_all)
+            self.update_epoch_meter_zh(f"test-noiter/{metric_name}", metric_item.item())
+        
         metrics_results["overall"] = {}
         for metric_name, metric_func in self.metrics.items():
-            metric_item = self.metric_forward(metric_func, returns_all)
-            self.update_epoch_meter(f"test/{metric_name}", metric_item.item())
-            metrics_results["overall"][metric_name] = metric_item.item()
-
+            # metric_item = self.metric_forward(metric_func, returns_all)
+            # self.update_epoch_meter(f"test/{metric_name}", metric_item.item())
+            # metrics_results["overall"][metric_name] = metric_item.item()
+            value_item,num_item = metric_item = self.metric_forward(metric_func, returns_all)
+            self.update_epoch_meter(f"test-noiter/{metric_name}", value_item.item(), num_item.item())              
+            metrics_results["overall"][metric_name] = value_item.item()/num_item.item()
         return metrics_results
 
     @torch.no_grad()
@@ -512,6 +647,8 @@ class BaseTimeSeriesForecastingRunner(BaseEpochRunner):
             forward_return = self.forward(data, epoch=None, iter_num=None, train=False)
 
             loss = self.metric_forward(self.loss, forward_return)
+            self.update_epoch_meter_bts("test/lossbts", loss.item())
+            self.update_epoch_meter_zh("test/losszh", loss.item())
             self.update_epoch_meter("test/loss", loss.item())
 
             if not self.if_evaluate_on_gpu:
