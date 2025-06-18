@@ -5,7 +5,7 @@ from easydict import EasyDict
 
 sys.path.append(os.path.abspath(__file__ + "/../../.."))
 
-from basicts.metrics import masked_mae, masked_mse, masked_mape, masked_rmse
+from basicts.metrics import masked_mae, masked_mape, masked_rmse, masked_ae, masked_ape, masked_se
 from basicts.data import MyTimeSeries
 from basicts.runners import SimpleTimeSeriesForecastingRunner
 from basicts.scaler import MyZScoreScaler
@@ -41,7 +41,7 @@ MODEL_PARAM = {
     "d_model": 512,
     "use_revin": True,
 }
-NUM_EPOCHS = 100
+NUM_EPOCHS = 50
 
 ############################## General Configuration ##############################
 CFG = EasyDict()
@@ -99,7 +99,11 @@ CFG.MODEL.TARGET_FEATURES = [0]
 CFG.METRICS = EasyDict()
 # Metrics settings
 CFG.METRICS.FUNCS = EasyDict(
-    {"MAE": masked_mae, "MSE": masked_mse, "RMSE": masked_rmse, "MAPE": masked_mape}
+    {
+        "MAE": masked_ae,
+        "RMSE": masked_se,
+        "MAPE": masked_ape,
+    }
 )
 CFG.METRICS.TARGET = "MSE"
 CFG.METRICS.NULL_VAL = NULL_VAL
@@ -136,20 +140,23 @@ CFG.TRAIN.LR_SCHEDULER.PARAM = {
 CFG.TRAIN.CLIP_GRAD_PARAM = {"max_norm": 5.0}
 # Train data loader settings
 CFG.TRAIN.DATA = EasyDict()
-CFG.TRAIN.DATA.BATCH_SIZE = 64
+CFG.TRAIN.DATA.BATCH_SIZE = 16
 CFG.TRAIN.DATA.SHUFFLE = True
+CFG.TRAIN.DATA.PREFETCH = True # 是否使用预取的数据加载器。详见 https://github.com/justheuristic/prefetch_generator。默认值：False。
+CFG.TRAIN.DATA.NUM_WORKERS = 4 # 训练数据加载器的工作线程数。默认值：0
+CFG.TRAIN.DATA.PIN_MEMORY = True # 训练数据加载器是否固定内存。默认值：False
 
 ############################## Validation Configuration ##############################
 CFG.VAL = EasyDict()
 CFG.VAL.INTERVAL = 1
 CFG.VAL.DATA = EasyDict()
-CFG.VAL.DATA.BATCH_SIZE = 64
+CFG.VAL.DATA.BATCH_SIZE = 16
 
 ############################## Test Configuration ##############################
 CFG.TEST = EasyDict()
 CFG.TEST.INTERVAL = 200
 CFG.TEST.DATA = EasyDict()
-CFG.TEST.DATA.BATCH_SIZE = 64
+CFG.TEST.DATA.BATCH_SIZE = 16
 
 ############################## Evaluation Configuration ##############################
 
