@@ -4,7 +4,7 @@ from easydict import EasyDict
 
 sys.path.append(os.path.abspath(__file__ + "/../../.."))
 
-from basicts.metrics import masked_mae, masked_mape, masked_rmse
+from basicts.metrics import masked_mae, masked_mape, masked_rmse, masked_ae, masked_ape, masked_se
 from basicts.data import MyTimeSeries
 from basicts.runners import SimpleTimeSeriesForecastingRunner
 from basicts.scaler import MyZScoreScaler
@@ -36,7 +36,7 @@ MODEL_PARAM = {
     "individual": False,
     "enc_in": 8600,
 }
-NUM_EPOCHS = 100
+NUM_EPOCHS = 50
 
 ############################## General Configuration ##############################
 CFG = EasyDict()
@@ -90,7 +90,11 @@ CFG.MODEL.TARGET_FEATURES = [0]
 CFG.METRICS = EasyDict()
 # Metrics settings
 CFG.METRICS.FUNCS = EasyDict(
-    {"MAE": masked_mae, "MAPE": masked_mape, "RMSE": masked_rmse}
+    {
+        "MAE": masked_ae,
+        "RMSE": masked_se,
+        "MAPE": masked_ape,
+    }
 )
 CFG.METRICS.TARGET = "MAE"
 CFG.METRICS.NULL_VAL = NULL_VAL
@@ -118,24 +122,26 @@ CFG.TRAIN.LR_SCHEDULER.PARAM = {"milestones": [1, 25], "gamma": 0.5}
 CFG.TRAIN.CLIP_GRAD_PARAM = {"max_norm": 5.0}
 # Train data loader settings
 CFG.TRAIN.DATA = EasyDict()
-CFG.TRAIN.DATA.BATCH_SIZE = 64
+CFG.TRAIN.DATA.BATCH_SIZE = 16
 CFG.TRAIN.DATA.SHUFFLE = True
 
 ############################## Validation Configuration ##############################
 CFG.VAL = EasyDict()
 CFG.VAL.INTERVAL = 1
 CFG.VAL.DATA = EasyDict()
-CFG.VAL.DATA.BATCH_SIZE = 64
+CFG.VAL.DATA.BATCH_SIZE = 16
 
 ############################## Test Configuration ##############################
 CFG.TEST = EasyDict()
 CFG.TEST.INTERVAL = 200
 CFG.TEST.DATA = EasyDict()
-CFG.TEST.DATA.BATCH_SIZE = 64
+CFG.TEST.DATA.BATCH_SIZE = 16
 
 ############################## Evaluation Configuration ##############################
 
 CFG.EVAL = EasyDict()
 
 # Evaluation parameters
+CFG.EVAL.HORIZONS = []  # Prediction horizons for evaluation. Default: []
 CFG.EVAL.USE_GPU = True  # Whether to use GPU for evaluation. Default: True
+
