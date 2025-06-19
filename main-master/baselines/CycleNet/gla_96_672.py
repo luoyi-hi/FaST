@@ -5,7 +5,7 @@ from easydict import EasyDict
 
 sys.path.append(os.path.abspath(__file__ + "/../../.."))
 
-from basicts.metrics import masked_mae, masked_mape, masked_rmse, masked_ae, masked_ape, masked_se, masked_mse
+from basicts.metrics import masked_mae, masked_mape, masked_rmse, masked_ae, masked_ape, masked_se, masked_mse_bts
 from basicts.data import MyTimeSeries
 from basicts.runners import SimpleTimeSeriesForecastingRunner
 from basicts.scaler import MyZScoreScaler
@@ -103,10 +103,9 @@ CFG.METRICS.FUNCS = EasyDict(
         "MAE": masked_ae,
         "RMSE": masked_se,
         "MAPE": masked_ape,
-        "MSE": masked_mse,
     }
 )
-CFG.METRICS.TARGET = "MSE"
+CFG.METRICS.TARGET = "MAE"
 CFG.METRICS.NULL_VAL = NULL_VAL
 
 ############################## Training Configuration ##############################
@@ -143,9 +142,9 @@ CFG.TRAIN.CLIP_GRAD_PARAM = {"max_norm": 5.0}
 CFG.TRAIN.DATA = EasyDict()
 CFG.TRAIN.DATA.BATCH_SIZE = 32
 CFG.TRAIN.DATA.SHUFFLE = True
-CFG.TRAIN.DATA.PREFETCH = True # 是否使用预取的数据加载器。详见 https://github.com/justheuristic/prefetch_generator。默认值：False。
-CFG.TRAIN.DATA.NUM_WORKERS = 4 # 训练数据加载器的工作线程数。默认值：0
-CFG.TRAIN.DATA.PIN_MEMORY = True # 训练数据加载器是否固定内存。默认值：False
+# CFG.TRAIN.DATA.PREFETCH = True # 是否使用预取的数据加载器。详见 https://github.com/justheuristic/prefetch_generator。默认值：False。
+# CFG.TRAIN.DATA.NUM_WORKERS = 4 # 训练数据加载器的工作线程数。默认值：0
+# CFG.TRAIN.DATA.PIN_MEMORY = True # 训练数据加载器是否固定内存。默认值：False
 
 ############################## Validation Configuration ##############################
 CFG.VAL = EasyDict()
