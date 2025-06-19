@@ -5,7 +5,7 @@ from easydict import EasyDict
 
 sys.path.append(os.path.abspath(__file__ + "/../../.."))
 
-from basicts.metrics import masked_mae, masked_mape, masked_rmse, masked_ae, masked_ape, masked_se
+from basicts.metrics import masked_mae, masked_mape, masked_rmse, masked_ae, masked_ape, masked_se, masked_mse
 from basicts.data import MyTimeSeries
 from basicts.runners import SimpleTimeSeriesForecastingRunner
 from basicts.scaler import MyZScoreScaler
@@ -103,6 +103,7 @@ CFG.METRICS.FUNCS = EasyDict(
         "MAE": masked_ae,
         "RMSE": masked_se,
         "MAPE": masked_ape,
+        "MSE": masked_mse,
     }
 )
 CFG.METRICS.TARGET = "MSE"
