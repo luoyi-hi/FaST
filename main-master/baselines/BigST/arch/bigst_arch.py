@@ -57,7 +57,8 @@ class BigST(nn.Module):
 
     def forward(self, history_data: torch.Tensor, future_data: torch.Tensor, batch_seen: int, epoch: int, train: bool, **kwargs) -> torch.Tensor:
         history_data = history_data.transpose(1,2) # (B, N, T, D)
-        x = history_data[:, :, -self.out_dim:]         # (batch_size, in_len, data_dim)
+        # x = history_data[:, :, -self.out_dim:]         # (batch_size, in_len, data_dim)
+        x = history_data
 
         if self.use_long:
             feat = []

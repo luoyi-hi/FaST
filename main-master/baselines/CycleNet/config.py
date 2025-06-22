@@ -19,16 +19,13 @@ import pdb
 # Dataset & Metrics configuration
 
 
-DATA_NAME = 'SD'  # Dataset name
+DATA_NAME = 'SD'
 num_nodes = 716
 INPUT_LEN = 96
 OUTPUT_LEN = 48
 NUM_EPOCHS = 50
 BATHCH_SIZE = 32
 
-
-
-DATA_NAME = "ca"  # Dataset name
 regular_settings = get_regular_settings(DATA_NAME)
 INPUT_LEN = 96  # Length of input sequence
 OUTPUT_LEN = 192  # Length of output sequence

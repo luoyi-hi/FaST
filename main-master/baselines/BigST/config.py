@@ -5,21 +5,30 @@ from easydict import EasyDict
 
 sys.path.append(os.path.abspath(__file__ + "/../../.."))
 
-from basicts.metrics import masked_mae, masked_mape, masked_rmse
+from basicts.metrics import masked_mae, masked_mape, masked_rmse, masked_ae, masked_ape, masked_se, masked_mse_bts
 from basicts.data import MyTimeSeries
 from basicts.runners import SimpleTimeSeriesForecastingRunner
 from basicts.scaler import MyZScoreScaler
 from basicts.utils import get_regular_settings, load_adj
 
-from .arch import BigSTPreprocess
-from .runner import BigSTPreprocessRunner
+from .arch import BigST
+
+# from .runner import BigSTPreprocessRunner
+from .loss import bigst_loss
+
+import pdb
 
 ############################## Hot Parameters ##############################
 # Dataset & Metrics configuration
-DATA_NAME = "sd"  # Dataset name
+DATA_NAME = 'sd'
+num_nodes = 716
+INPUT_LEN = 96
+OUTPUT_LEN = 48
+NUM_EPOCHS = 50
+BATHCH_SIZE = 32
+
+
 regular_settings = get_regular_settings(DATA_NAME)
-INPUT_LEN = 672
-OUTPUT_LEN = 96
 TRAIN_VAL_TEST_RATIO = regular_settings[
     "TRAIN_VAL_TEST_RATIO"
 ]  # Train/Validation/Test split ratios
@@ -29,19 +38,43 @@ NORM_EACH_CHANNEL = regular_settings[
 RESCALE = regular_settings["RESCALE"]  # Whether to rescale the data
 NULL_VAL = regular_settings["NULL_VAL"]  # Null value in the data
 # Model architecture and parameters
-MODEL_ARCH = BigSTPreprocess
+PREPROCESSED_FILE = (
+    "checkpoints/BigSTPreprocess/sd_100_672_48/BigSTPreprocess_best_val_MAE.pt"
+)
+MODEL_ARCH = BigST
+
 adj_mx, _ = load_adj("datasets/" + DATA_NAME + "/adj_mx.pkl", "doubletransition")
 MODEL_PARAM = {
-    "num_nodes": 716,
-    "in_dim": 3,
-    "dropout": 0.3,
-    "input_length": INPUT_LEN,
-    "output_length": OUTPUT_LEN,
-    "nhid": 32,
-    "tiny_batch_size": 700,
+    "bigst_args": {
+        "num_nodes": num_nodes,
+        "seq_num": INPUT_LEN,
+        "in_dim": 3,
+        "out_dim": OUTPUT_LEN,  #  源代码固定成12了
+        "hid_dim": 32,
+        "tau": 0.25,
+        "random_feature_dim": 64,
+        "node_emb_dim": 32,
+        "time_emb_dim": 32,
+        "use_residual": True,
+        "use_bn": True,
+        "use_long": False,
+        "use_spatial": True,
+        "dropout": 0.3,
+        "supports": [torch.tensor(i) for i in adj_mx],
+        "time_of_day_size": 96,
+        "day_of_week_size": 7,
+    },
+    "preprocess_path": PREPROCESSED_FILE,
+    "preprocess_args": {
+        "num_nodes": num_nodes,
+        "in_dim": 3,
+        "dropout": 0.3,
+        "input_length": INPUT_LEN,
+        "output_length": OUTPUT_LEN,
+        "nhid": 32,
+        "tiny_batch_size": 700,
+    },
 }
-
-NUM_EPOCHS = 100
 
 ############################## General Configuration ##############################
 CFG = EasyDict()
@@ -49,12 +82,12 @@ CFG = EasyDict()
 CFG.DESCRIPTION = "An Example Config"
 CFG.GPU_NUM = 1  # Number of GPUs to use (0 for CPU mode)
 # Runner
-CFG.RUNNER = BigSTPreprocessRunner
+CFG.RUNNER = SimpleTimeSeriesForecastingRunner
 
 ############################## Environment Configuration ##############################
 
 CFG.ENV = EasyDict()  # Environment settings. Default: None
-CFG.ENV.SEED = 42  # Random seed. Default: None
+CFG.ENV.SEED = 0  # Random seed. Default: None
 
 ############################## Dataset Configuration ##############################
 CFG.DATASET = EasyDict()
@@ -101,9 +134,9 @@ CFG.METRICS = EasyDict()
 # Metrics settings
 CFG.METRICS.FUNCS = EasyDict(
     {
-        "MAE": masked_mae,
-        "MAPE": masked_mape,
-        "RMSE": masked_rmse,
+        "MAE": masked_ae,
+        "RMSE": masked_se,
+        "MAPE": masked_ape,
     }
 )
 CFG.METRICS.TARGET = "MAE"
@@ -117,7 +150,9 @@ CFG.TRAIN.CKPT_SAVE_DIR = os.path.join(
     MODEL_ARCH.__name__,
     "_".join([DATA_NAME, str(CFG.TRAIN.NUM_EPOCHS), str(INPUT_LEN), str(OUTPUT_LEN)]),
 )
-CFG.TRAIN.LOSS = masked_mae
+
+
+CFG.TRAIN.LOSS = bigst_loss if MODEL_PARAM["bigst_args"]["use_spatial"] else masked_mae
 # Optimizer settings
 CFG.TRAIN.OPTIM = EasyDict()
 CFG.TRAIN.OPTIM.TYPE = "AdamW"
@@ -131,27 +166,27 @@ CFG.TRAIN.LR_SCHEDULER.TYPE = "MultiStepLR"
 CFG.TRAIN.LR_SCHEDULER.PARAM = {"milestones": [1, 50], "gamma": 0.5}
 # Train data loader settings
 CFG.TRAIN.DATA = EasyDict()
-CFG.TRAIN.DATA.BATCH_SIZE = 1
+CFG.TRAIN.DATA.BATCH_SIZE = BATHCH_SIZE
 CFG.TRAIN.DATA.SHUFFLE = True
-# Gradient clipping settings
-CFG.TRAIN.CLIP_GRAD_PARAM = {"max_norm": 5.0}
+CFG.TRAIN.DATA.PREFETCH = True # 是否使用预取的数据加载器。详见 https://github.com/justheuristic/prefetch_generator。默认值：False。
+CFG.TRAIN.DATA.NUM_WORKERS = 4 # 训练数据加载器的工作线程数。默认值：0
+CFG.TRAIN.DATA.PIN_MEMORY = True # 训练数据加载器是否固定内存。默认值：False
 
 ############################## Validation Configuration ##############################
 CFG.VAL = EasyDict()
 CFG.VAL.INTERVAL = 1
 CFG.VAL.DATA = EasyDict()
-CFG.VAL.DATA.BATCH_SIZE = 1
+CFG.VAL.DATA.BATCH_SIZE = BATHCH_SIZE
 
 ############################## Test Configuration ##############################
 CFG.TEST = EasyDict()
 CFG.TEST.INTERVAL = 200
 CFG.TEST.DATA = EasyDict()
-CFG.TEST.DATA.BATCH_SIZE = 1
+CFG.TEST.DATA.BATCH_SIZE = BATHCH_SIZE
 
 ############################## Evaluation Configuration ##############################
 
 CFG.EVAL = EasyDict()
 
 # Evaluation parameters
-CFG.EVAL.HORIZONS = []  # Prediction horizons for evaluation. Default: []
 CFG.EVAL.USE_GPU = True  # Whether to use GPU for evaluation. Default: True
