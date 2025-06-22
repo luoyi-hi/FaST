@@ -17,6 +17,17 @@ import pdb
 
 ############################## Hot Parameters ##############################
 # Dataset & Metrics configuration
+
+
+DATA_NAME = 'SD'  # Dataset name
+num_nodes = 716
+INPUT_LEN = 96
+OUTPUT_LEN = 48
+NUM_EPOCHS = 50
+BATHCH_SIZE = 32
+
+
+
 DATA_NAME = "ca"  # Dataset name
 regular_settings = get_regular_settings(DATA_NAME)
 INPUT_LEN = 96  # Length of input sequence
@@ -34,14 +45,13 @@ MODEL_ARCH = CycleNet
 MODEL_PARAM = {
     "seq_len": INPUT_LEN,
     "pred_len": OUTPUT_LEN,
-    "enc_in": 8600,
+    "enc_in": num_nodes,
     "cycle_pattern": "daily&weekly",  # daily OR daily&weekly
     "cycle": 96,  # time_of_day_size
     "model_type": "mlp",  # linear or mlp
     "d_model": 512,
     "use_revin": True,
 }
-NUM_EPOCHS = 50
 
 ############################## General Configuration ##############################
 CFG = EasyDict()
@@ -140,7 +150,7 @@ CFG.TRAIN.LR_SCHEDULER.PARAM = {
 CFG.TRAIN.CLIP_GRAD_PARAM = {"max_norm": 5.0}
 # Train data loader settings
 CFG.TRAIN.DATA = EasyDict()
-CFG.TRAIN.DATA.BATCH_SIZE = 32
+CFG.TRAIN.DATA.BATCH_SIZE = BATHCH_SIZE 
 CFG.TRAIN.DATA.SHUFFLE = True
 CFG.TRAIN.DATA.PREFETCH = True # 是否使用预取的数据加载器。详见 https://github.com/justheuristic/prefetch_generator。默认值：False。
 CFG.TRAIN.DATA.NUM_WORKERS = 4 # 训练数据加载器的工作线程数。默认值：0
@@ -150,13 +160,13 @@ CFG.TRAIN.DATA.PIN_MEMORY = True # 训练数据加载器是否固定内存。默
 CFG.VAL = EasyDict()
 CFG.VAL.INTERVAL = 1
 CFG.VAL.DATA = EasyDict()
-CFG.VAL.DATA.BATCH_SIZE = 32
+CFG.VAL.DATA.BATCH_SIZE = BATHCH_SIZE 
 
 ############################## Test Configuration ##############################
 CFG.TEST = EasyDict()
 CFG.TEST.INTERVAL = 200
 CFG.TEST.DATA = EasyDict()
-CFG.TEST.DATA.BATCH_SIZE = 32
+CFG.TEST.DATA.BATCH_SIZE = BATHCH_SIZE 
 
 ############################## Evaluation Configuration ##############################
 
