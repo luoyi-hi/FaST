@@ -13,21 +13,21 @@ from typing import List
 
 # ---------------------------------------------------------------------------
 # 默认搜索空间 --------------------------------------------------------------
-DEFAULT_MODEL_NAMES:   List[str] = ["PASTNet"]            # ←① 多模型遍历
+DEFAULT_MODEL_NAMES:   List[str] = ["BigST"]            # ←① 多模型遍历
 DEFAULT_DATA_NAMES:    List[str] = ["sd", "gba", "gla", "ca"]
 DEFAULT_INPUT_LENS:    List[int]  = [96]                  # ←② 输入长度搜索
-DEFAULT_OUTPUT_LENS:   List[int]  = [48]                  # ←③ 输出长度搜索
+DEFAULT_OUTPUT_LENS:   List[int]  = [48,96,192,672]                  # ←③ 输出长度搜索
 DEFAULT_BATCH_SIZES:   List[int]  = [32]                  # ←④ 批次大小搜索
 
-DEFAULT_GPU_ID = "2"
+DEFAULT_GPU_ID = "0"
 DEFAULT_CONFIG_NAME = "config"
 DEFAULT_KEEP_TEMP = False
 
 NUM_NODES_MAP: dict[str, int] = {
-    "CA": 8600,
-    "GBA": 2352,
-    "GLA": 3834,
-    "SD": 716,
+    "ca": 8600,
+    "gba": 2352,
+    "gla": 3834,
+    "sd": 716,
 }
 # ---------------------------------------------------------------------------
 
@@ -100,7 +100,7 @@ def _delete_pycache(pkg_dir: Path, module_basename: str) -> None:
 
 def _launch_training(cfg_module: str, gpu: str) -> None:
     """调用训练脚本。"""
-    cmd = [sys.executable, "experiments/train.py", "-g", gpu, "-c", cfg_module]
+    cmd = [sys.executable, "main-master/experiments/train_seed.py", "-g", gpu, "-c", cfg_module]
     logging.info("Running: %s", " ".join(cmd))
     subprocess.run(cmd, check=True)
 
@@ -116,7 +116,7 @@ def main(argv: List[str] | None = None) -> None:
 
     # 外层先遍历模型名
     for model_name in args.model_names:
-        pkg_dir = Path("baselines") / model_name
+        pkg_dir = Path("main-master/baselines") / model_name
         tpl_path = pkg_dir / f"{args.config_name}.py"
         template_src = read_template(tpl_path)
 

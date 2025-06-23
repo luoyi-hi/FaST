@@ -14,10 +14,15 @@ from .arch import NHiTS
 
 ############################## Hot Parameters ##############################
 # Dataset & Metrics configuration
-DATA_NAME = "ca"  # Dataset name
+DATA_NAME = 'sd'
+num_nodes = 716
+INPUT_LEN = 96
+OUTPUT_LEN = 48
+NUM_EPOCHS = 50
+BATHCH_SIZE = 32
+
+
 regular_settings = get_regular_settings(DATA_NAME)
-INPUT_LEN = 96  # Length of input sequence
-OUTPUT_LEN = 672  # Length of output sequence
 TRAIN_VAL_TEST_RATIO = regular_settings[
     "TRAIN_VAL_TEST_RATIO"
 ]  # Train/Validation/Test split ratios
@@ -28,7 +33,7 @@ RESCALE = regular_settings["RESCALE"]  # Whether to rescale the data
 NULL_VAL = regular_settings["NULL_VAL"]  # Null value in the data
 # Model architecture and parameters
 MODEL_ARCH = NHiTS
-NUM_NODES = 8600
+NUM_NODES = num_nodes
 MODEL_PARAM = {
     "context_length": INPUT_LEN,
     "prediction_length": OUTPUT_LEN,
@@ -39,7 +44,6 @@ MODEL_PARAM = {
     "pooling_sizes": [8, 8, 8],
     "downsample_frequencies": [24, 12, 1],
 }
-NUM_EPOCHS = 50
 
 ############################## General Configuration ##############################
 CFG = EasyDict()
@@ -126,7 +130,7 @@ CFG.TRAIN.LR_SCHEDULER.PARAM = {"milestones": [20, 40, 60, 80], "gamma": 0.5}
 CFG.TRAIN.CLIP_GRAD_PARAM = {"max_norm": 5.0}
 # Train data loader settings
 CFG.TRAIN.DATA = EasyDict()
-CFG.TRAIN.DATA.BATCH_SIZE = 16
+CFG.TRAIN.DATA.BATCH_SIZE = BATHCH_SIZE
 CFG.TRAIN.DATA.SHUFFLE = True
 CFG.TRAIN.DATA.PREFETCH = True # 是否使用预取的数据加载器。详见 https://github.com/justheuristic/prefetch_generator。默认值：False。
 CFG.TRAIN.DATA.NUM_WORKERS = 4 # 训练数据加载器的工作线程数。默认值：0
@@ -136,13 +140,13 @@ CFG.TRAIN.DATA.PIN_MEMORY = True # 训练数据加载器是否固定内存。默
 CFG.VAL = EasyDict()
 CFG.VAL.INTERVAL = 1
 CFG.VAL.DATA = EasyDict()
-CFG.VAL.DATA.BATCH_SIZE = 16
+CFG.VAL.DATA.BATCH_SIZE = BATHCH_SIZE
 
 ############################## Test Configuration ##############################
 CFG.TEST = EasyDict()
 CFG.TEST.INTERVAL = 200
 CFG.TEST.DATA = EasyDict()
-CFG.TEST.DATA.BATCH_SIZE = 16
+CFG.TEST.DATA.BATCH_SIZE = BATHCH_SIZE
 
 ############################## Evaluation Configuration ##############################
 

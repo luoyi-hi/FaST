@@ -17,18 +17,15 @@ import pdb
 
 ############################## Hot Parameters ##############################
 # Dataset & Metrics configuration
-
-
-DATA_NAME = 'SD'
+DATA_NAME = 'sd'
 num_nodes = 716
 INPUT_LEN = 96
 OUTPUT_LEN = 48
 NUM_EPOCHS = 50
 BATHCH_SIZE = 32
 
+
 regular_settings = get_regular_settings(DATA_NAME)
-INPUT_LEN = 96  # Length of input sequence
-OUTPUT_LEN = 192  # Length of output sequence
 TRAIN_VAL_TEST_RATIO = regular_settings[
     "TRAIN_VAL_TEST_RATIO"
 ]  # Train/Validation/Test split ratios

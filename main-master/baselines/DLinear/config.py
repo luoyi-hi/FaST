@@ -14,12 +14,15 @@ from .arch import DLinear
 
 ############################## Hot Parameters ##############################
 # Dataset & Metrics configuration
-DATA_NAME = "ca"  # Dataset name
+DATA_NAME = 'sd'
+num_nodes = 716
+INPUT_LEN = 96
+OUTPUT_LEN = 48
+NUM_EPOCHS = 50
+BATHCH_SIZE = 32
+
+
 regular_settings = get_regular_settings(DATA_NAME)
-# INPUT_LEN = regular_settings['INPUT_LEN']  # Length of input sequence
-# OUTPUT_LEN = regular_settings['OUTPUT_LEN']  # Length of output sequence
-INPUT_LEN = 96  # LTSF
-OUTPUT_LEN = 192  # LTSF
 TRAIN_VAL_TEST_RATIO = regular_settings[
     "TRAIN_VAL_TEST_RATIO"
 ]  # Train/Validation/Test split ratios
@@ -34,9 +37,8 @@ MODEL_PARAM = {
     "seq_len": INPUT_LEN,
     "pred_len": OUTPUT_LEN,
     "individual": False,
-    "enc_in": 8600,
+    "enc_in": num_nodes,
 }
-NUM_EPOCHS = 50
 
 ############################## General Configuration ##############################
 CFG = EasyDict()
@@ -122,28 +124,26 @@ CFG.TRAIN.LR_SCHEDULER.PARAM = {"milestones": [1, 25], "gamma": 0.5}
 CFG.TRAIN.CLIP_GRAD_PARAM = {"max_norm": 5.0}
 # Train data loader settings
 CFG.TRAIN.DATA = EasyDict()
-CFG.TRAIN.DATA.BATCH_SIZE = 32
+CFG.TRAIN.DATA.BATCH_SIZE = BATHCH_SIZE
 CFG.TRAIN.DATA.SHUFFLE = True
-CFG.TRAIN.DATA.PREFETCH = True # 是否使用预取的数据加载器。详见 https://github.com/justheuristic/prefetch_generator。默认值：False。
-CFG.TRAIN.DATA.NUM_WORKERS = 4 # 训练数据加载器的工作线程数。默认值：0
-CFG.TRAIN.DATA.PIN_MEMORY = True # 训练数据加载器是否固定内存。默认值：False
 
 ############################## Validation Configuration ##############################
 CFG.VAL = EasyDict()
 CFG.VAL.INTERVAL = 1
 CFG.VAL.DATA = EasyDict()
-CFG.VAL.DATA.BATCH_SIZE = 32
+CFG.VAL.DATA.BATCH_SIZE = BATHCH_SIZE
 
 ############################## Test Configuration ##############################
 CFG.TEST = EasyDict()
 CFG.TEST.INTERVAL = 200
 CFG.TEST.DATA = EasyDict()
-CFG.TEST.DATA.BATCH_SIZE = 32
+CFG.TEST.DATA.BATCH_SIZE = BATHCH_SIZE
 
 ############################## Evaluation Configuration ##############################
 
 CFG.EVAL = EasyDict()
 
 # Evaluation parameters
+CFG.EVAL.HORIZONS = []  # Prediction horizons for evaluation. Default: []
 CFG.EVAL.USE_GPU = True  # Whether to use GPU for evaluation. Default: True
 
