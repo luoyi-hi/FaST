@@ -25,7 +25,7 @@ num_nodes = 716
 INPUT_LEN = 96
 OUTPUT_LEN = 48
 NUM_EPOCHS = 50
-BATHCH_SIZE = 32
+BATCH_SIZE = 32
 
 
 regular_settings = get_regular_settings(DATA_NAME)
@@ -166,7 +166,7 @@ CFG.TRAIN.LR_SCHEDULER.TYPE = "MultiStepLR"
 CFG.TRAIN.LR_SCHEDULER.PARAM = {"milestones": [1, 50], "gamma": 0.5}
 # Train data loader settings
 CFG.TRAIN.DATA = EasyDict()
-CFG.TRAIN.DATA.BATCH_SIZE = BATHCH_SIZE
+CFG.TRAIN.DATA.BATCH_SIZE = BATCH_SIZE
 CFG.TRAIN.DATA.SHUFFLE = True
 CFG.TRAIN.DATA.PREFETCH = True # 是否使用预取的数据加载器。详见 https://github.com/justheuristic/prefetch_generator。默认值：False。
 CFG.TRAIN.DATA.NUM_WORKERS = 4 # 训练数据加载器的工作线程数。默认值：0
@@ -176,13 +176,13 @@ CFG.TRAIN.DATA.PIN_MEMORY = True # 训练数据加载器是否固定内存。默
 CFG.VAL = EasyDict()
 CFG.VAL.INTERVAL = 1
 CFG.VAL.DATA = EasyDict()
-CFG.VAL.DATA.BATCH_SIZE = BATHCH_SIZE
+CFG.VAL.DATA.BATCH_SIZE = BATCH_SIZE
 
 ############################## Test Configuration ##############################
 CFG.TEST = EasyDict()
 CFG.TEST.INTERVAL = 200
 CFG.TEST.DATA = EasyDict()
-CFG.TEST.DATA.BATCH_SIZE = BATHCH_SIZE
+CFG.TEST.DATA.BATCH_SIZE = BATCH_SIZE
 
 ############################## Evaluation Configuration ##############################
 

@@ -19,7 +19,7 @@ num_nodes = 716
 INPUT_LEN = 96
 OUTPUT_LEN = 48
 NUM_EPOCHS = 50
-BATHCH_SIZE = 32
+BATCH_SIZE = 32
 
 
 regular_settings = get_regular_settings(DATA_NAME)
@@ -124,20 +124,20 @@ CFG.TRAIN.LR_SCHEDULER.PARAM = {"milestones": [1, 25], "gamma": 0.5}
 CFG.TRAIN.CLIP_GRAD_PARAM = {"max_norm": 5.0}
 # Train data loader settings
 CFG.TRAIN.DATA = EasyDict()
-CFG.TRAIN.DATA.BATCH_SIZE = BATHCH_SIZE
+CFG.TRAIN.DATA.BATCH_SIZE = BATCH_SIZE
 CFG.TRAIN.DATA.SHUFFLE = True
 
 ############################## Validation Configuration ##############################
 CFG.VAL = EasyDict()
 CFG.VAL.INTERVAL = 1
 CFG.VAL.DATA = EasyDict()
-CFG.VAL.DATA.BATCH_SIZE = BATHCH_SIZE
+CFG.VAL.DATA.BATCH_SIZE = BATCH_SIZE
 
 ############################## Test Configuration ##############################
 CFG.TEST = EasyDict()
 CFG.TEST.INTERVAL = 200
 CFG.TEST.DATA = EasyDict()
-CFG.TEST.DATA.BATCH_SIZE = BATHCH_SIZE
+CFG.TEST.DATA.BATCH_SIZE = BATCH_SIZE
 
 ############################## Evaluation Configuration ##############################
 
