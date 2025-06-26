@@ -52,8 +52,8 @@ class DiscreteGraphLearning(nn.Module):
         super().__init__()
 
         self.k = k          # the "k" of knn graph
-        self.num_nodes = {"METR-LA": 207, "PEMS04": 307, "PEMS03": 358, "PEMS-BAY": 325, "PEMS07": 883, "PEMS08": 170}[dataset_name]
-        self.train_length = {"METR-LA": 23990, "PEMS04": 13599, "PEMS03": 15303, "PEMS07": 16513, "PEMS-BAY": 36482, "PEMS08": 14284}[dataset_name]
+        self.num_nodes = {"METR-LA": 207, "PEMS04": 307, "PEMS03": 358, "PEMS-BAY": 325, "PEMS07": 883, "PEMS08": 170,"sd":716}[dataset_name]
+        self.train_length = {"METR-LA": 23990, "PEMS04": 13599, "PEMS03": 15303, "PEMS07": 16513, "PEMS-BAY": 36482, "PEMS08": 14284,"sd":20938}[dataset_name]
         self.node_feats = torch.from_numpy(load_dataset_data(dataset_name))[:self.train_length, :, 0]
 
         # CNN for global feature extraction

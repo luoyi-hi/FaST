@@ -41,6 +41,7 @@ class DGCRNRunner(SimpleTimeSeriesForecastingRunner):
         if isinstance(model_return, torch.Tensor): model_return = {"prediction": model_return}
         model_return["inputs"] = self.select_target_features(history_data)
         model_return["target"] = self.select_target_features(future_data)
+        print(model_return["prediction"].shape, model_return["inputs"].shape, model_return["target"].shape)
         assert list(model_return["prediction"].shape)[:3] == [batch_size, length, num_nodes], \
             "error shape of the output, edit the forward function to reshape it to [B, L, N, C]"
         model_return = self.postprocessing(model_return)

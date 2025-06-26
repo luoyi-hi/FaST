@@ -12,7 +12,7 @@ import numpy as np
 from tqdm import tqdm
 from fastdtw import fastdtw
 
-from basicts.utils.serialization import load_pkl, load_dataset_data
+from basicts.utils.serialization import load_pkl, load_dataset_data2
 
 
 def get_normalized_adj(A):
@@ -45,7 +45,7 @@ def generate_dtw_spa_matrix(dataset_name, sigma1=0.1, thres1=0.6, sigma2=10, thr
     """
 
     # original STGODE use the full time series to generate the matrices, which is not reasonable since the test set is not available in real world
-    data = load_dataset_data(dataset_name=dataset_name)
+    data = load_dataset_data2(dataset_name=dataset_name)
     num_node = data.shape[1]
     if not os.path.exists('{0}/{1}_dtw_distance.npy'.format(os.path.abspath(__file__ + "/.."), dataset_name)):
         print("generate dtw distance matrix")

@@ -186,4 +186,6 @@ class D2STGNN(nn.Module):
 
         # reshape
         forecast = forecast.transpose(1, 2).unsqueeze(-1)
+        print("model output shape:", forecast.shape)
+
         return forecast
