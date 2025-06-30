@@ -4,7 +4,7 @@ import os
 
 os.chdir(os.path.dirname(os.path.abspath(__file__)))
 
-data_names = ["ca", "sd", "gla"]
+data_names = ["SD", "GBA", "GLA", "CA"]
 
 for data_name in data_names:
     npy_file_path = f"{data_name}_rn_adj.npy"

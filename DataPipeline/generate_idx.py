@@ -41,9 +41,9 @@ def generate_and_split_indices_sequential(data_name, input_step, output_step):
 
 
 if __name__ == "__main__":
-    data_names = ["ca", "gla", "sd"]
+    data_names = ["SD", "GBA", "GLA", "CA"]
     input_time_step = 96
-    output_time_steps = [48, 96, 192, 672]
+    output_time_steps = [12, 48, 96, 192, 672]
 
     for output_time_step in output_time_steps:
         for data_name in data_names:

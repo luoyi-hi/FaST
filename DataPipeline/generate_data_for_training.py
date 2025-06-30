@@ -39,7 +39,7 @@ def generate_train_val_test(args):
     data = generate_data(df, args.tod, args.dow)
 
     # save
-    out_dir = "../main-master/datasets/" + args.dataset + "/"
+    out_dir = "../main-master/datasets/" + args.dataset.upper() + "/"
     if not os.path.exists(out_dir):
         os.makedirs(out_dir)
     np.savez_compressed(os.path.join(out_dir, "his.npz"), data=data)

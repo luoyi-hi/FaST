@@ -57,3 +57,26 @@ gla_meta_id = gla_meta.ID.values.tolist()
 gla_his = ca_his[gla_meta_id]
 
 gla_his.to_hdf("gla_his_" + year + ".h5", key="t", mode="w")
+
+
+ca_meta = pd.read_csv('../ca/ca_meta.csv')
+gba_meta = ca_meta[ca_meta.District == 4]
+gba_meta = gba_meta.reset_index()
+gba_meta = gba_meta.drop(columns=['index'])
+gba_meta.to_csv('gba_meta.csv', index=False)
+
+
+gba_meta_id2 = gba_meta.ID2.values.tolist()
+
+gba_rn_adj = ca_rn_adj[gba_meta_id2]
+gba_rn_adj = gba_rn_adj[:,gba_meta_id2]
+
+np.save('gba_rn_adj.npy', gba_rn_adj)
+
+gba_meta.ID = gba_meta.ID.astype(str)
+gba_meta_id = gba_meta.ID.values.tolist()
+
+gba_his = ca_his[gba_meta_id]
+
+gba_his.to_hdf('gba_his_' + year + '.h5', key='t', mode='w')
+
