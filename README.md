@@ -2,7 +2,11 @@
 
 ## 1. Experimental Details
 
-### 1.1 Dataset Description
+### 1.1 Experimental Setting
+
+Our model is implemented based on the `BasicTS` framework. The FaST uses the Adam optimizer with an initial learning rate of 0.002, and a weight decay parameter of 0.0001 for regularization. During the FaST training process, the learning rate scheduling strategy uses `MultiStepLR`, which decays the learning rate by a factor of 0.5 at the 10th, 20th, 30th, 40th, and 50th epochs for multi-stage progressive optimization, helping the model converge more stably. The maximum training epochs for all methods are set to 50, with early stopping on the validation set to determine the best parameters. The performance is evaluated using MAE, RMSE, and MAPE. All experiments are conducted in an environment with an AMD EPYC 7532 @2.40GHz, NVIDIA RTX A6000 GPU (48GB), 128GB RAM, and Ubuntu 20.04. The default deep learning library is PyTorch 2.2.1, and the Python version is 3.11.8.
+
+### 1.2 Dataset Description
 
 The CA dataset used in our report was collected from the Performance Measurement System (PeMS) by the authors of [1], and we obtained the data through that work. The San Diego (SD) and Greater Los Angeles (GLA) areas are two representative subregions selected from the CA dataset, containing 716 and 3834 sensors, respectively. 
 
@@ -21,9 +25,8 @@ python DataPipeline/generate_data.py
 
 python DataPipeline/generate_data_for_training.py --dataset sd --years 2019
 python DataPipeline/generate_data_for_training.py --dataset gba --years 2019
-python DataPipeline/generate_data_for_training.py --dataset ca --years 2019
 python DataPipeline/generate_data_for_training.py --dataset gla --years 2019
-python DataPipeline/generate_data_for_training.py --dataset sd --years 2019
+python DataPipeline/generate_data_for_training.py --dataset ca --years 2019
 
 python DataPipeline/process_adj.py
 
@@ -36,6 +39,7 @@ Dataset statistics are summarized in Table 1.
 | Data | #nodes | Time interval | Time range           | Std    | Mean   | Features     |
 | ---- | ------ | ------------- | -------------------- | ------ | ------ | ------------ |
 | SD   | 716    | 15 minute     | [1/1/2019, 1/1/2020) | 184.02 | 244.31 | traffic flow |
+| GBA  | 2,352  | 15 minute     | [1/1/2019, 1/1/2020) | 166.67 | 239.82 | traffic flow |
 | GLA  | 3,834  | 15 minute     | [1/1/2019, 1/1/2020) | 187.77 | 276.82 | traffic flow |
 | CA   | 8,600  | 15 minute     | [1/1/2019, 1/1/2020) | 177.12 | 237.39 | traffic flow |
 
@@ -45,14 +49,9 @@ For more dataset details, refer to literature [1].
 
 [1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting. In The Annual Conference on Neural Information Processing Systems. New Orleans, LA, USA.
 
-### 1.2 Data Generation for Model Training
+### 1.3 Data Generation for Model Training
 We use the 2019 SD, GLA, and CA datasets. First, we obtain all samples through a sliding window, then split the samples into training, validation, and test sets in a 6:2:2 ratio.
 The generated data will be stored in the `main-master/datasets` directory. In each data directory, the `his.npz` file stores raw traffic flow values along with derived daily and weekly features. The `adj_mx.pkl` file contains the adjacency matrix for the data, and `desc.json` stores the data information. Other folders, such as `{input_len}_{output_len}`, store the sample indices for the training, validation, and test sets for the corresponding forecasting length.
-
-
-### 1.3 Experimental Setting
-
-Our model is implemented based on the `BasicTS` framework. The FaST uses the Adam optimizer with an initial learning rate of 0.002, and a weight decay parameter of 0.0001 for regularization. During the FaST training process, the learning rate scheduling strategy uses `MultiStepLR`, which decays the learning rate by a factor of 0.5 at the 10th, 20th, 30th, 40th, and 50th epochs for multi-stage progressive optimization, helping the model converge more stably. The maximum training epochs for all methods are set to 100, with early stopping on the validation set to determine the best parameters. The performance is evaluated using MAE, RMSE, and MAPE. All experiments are conducted in an environment with an AMD EPYC 7532 @2.40GHz, NVIDIA RTX A6000 GPU (48GB), 128GB RAM, and Ubuntu 20.04. The default deep learning library is PyTorch 2.2.1, and the Python version is 3.11.8.
 
 ### 1.4 Training FaST Model
 Navigate to the `main-master` directory and run the following commands to train the FaST on different datasets and forecasting lengths:
