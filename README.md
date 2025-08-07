@@ -36,12 +36,12 @@ Dataset statistics are summarized in Table 1.
 
 #### Table 1: **Dataset statistics**
 
-| Data | #nodes | Time interval | Time range           | Std    | Mean   | Features     |
-| ---- | ------ | ------------- | -------------------- | ------ | ------ | ------------ |
-| SD   | 716    | 15 minute     | [1/1/2019, 1/1/2020) | 184.02 | 244.31 | traffic flow |
-| GBA  | 2,352  | 15 minute     | [1/1/2019, 1/1/2020) | 166.67 | 239.82 | traffic flow |
-| GLA  | 3,834  | 15 minute     | [1/1/2019, 1/1/2020) | 187.77 | 276.82 | traffic flow |
-| CA   | 8,600  | 15 minute     | [1/1/2019, 1/1/2020) | 177.12 | 237.39 | traffic flow |
+| Data | #nodes | Time interval | Time range           | Std    | Mean   | Features     | #TimeSlices | #Samples       |
+| ---- | ------ | ------------- | -------------------- | ------ | ------ | ------------ | ----------- | -------------- |
+| SD   | 716    | 15 minute     | [1/1/2019, 1/1/2020) | 184.02 | 244.31 | traffic flow | 35040       | 24.5M～25.0M   |
+| GBA  | 2,352  | 15 minute     | [1/1/2019, 1/1/2020) | 166.67 | 239.82 | traffic flow | 35040       | 80.6M～82.1M   |
+| GLA  | 3,834  | 15 minute     | [1/1/2019, 1/1/2020) | 187.77 | 276.82 | traffic flow | 35040       | 131.4M～133.8M |
+| CA   | 8,600  | 15 minute     | [1/1/2019, 1/1/2020) | 177.12 | 237.39 | traffic flow | 35040       | 294.7M～300.1M |
 
 For more dataset details, refer to literature [1].
 
