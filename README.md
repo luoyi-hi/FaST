@@ -4,7 +4,9 @@
 
 ### 1.1 Experimental Setting
 
+
 Our model is implemented based on the `BasicTS` framework. The FaST uses the Adam optimizer with an initial learning rate of 0.002, and a weight decay parameter of 0.0001 for regularization. During the FaST training process, the learning rate scheduling strategy uses `MultiStepLR`, which decays the learning rate by a factor of 0.5 at the 10th, 20th, 30th, 40th, and 50th epochs for multi-stage progressive optimization, helping the model converge more stably. The maximum training epochs for all methods are set to 50, with early stopping on the validation set to determine the best parameters. The performance is evaluated using MAE, RMSE, and MAPE. All experiments are conducted in an environment with an AMD EPYC 7532 @2.40GHz, NVIDIA RTX A6000 GPU (48GB), 128GB RAM, and Ubuntu 20.04. The default deep learning library is PyTorch 2.2.1, and the Python version is 3.11.8.
+
 
 ### 1.2 Dataset Description
 
