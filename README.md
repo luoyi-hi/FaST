@@ -29,7 +29,7 @@ pip install -r requirements.txt
 ```
 
 
-Unzip the downloaded data into the `DataPipeline` directory. Then, sequentially use the following command to generate the traffic data required for model training:
+Unzip the downloaded data into the `DataPipeline` directory. Then, use the following command to generate the traffic data required for model training:
 
 
 ```shell
@@ -57,7 +57,7 @@ For more dataset details, refer to literature [1].
 ### 1.3 Data Generation for Model Training
 
 
-We use the 2019 SD, GLA, and CA datasets. First, we obtain all samples through a sliding window, then split the samples into training, validation, and test sets in a 6:2:2 ratio.
+We use the 2019 SD, GBA, GLA, and CA datasets. First, we obtain all samples through a sliding window, then split the samples into training, validation, and test sets in a 6:2:2 ratio.
 The generated data will be stored in the `main-master/datasets` directory. In each data directory, the `his.npz` file stores raw traffic flow values along with derived daily and weekly features. The `adj_mx.pkl` file contains the adjacency matrix for the data, and `desc.json` stores the data information. Other folders, such as `{input_len}_{output_len}`, store the sample indices for the training, validation, and test sets for the corresponding forecasting length.
 
 
