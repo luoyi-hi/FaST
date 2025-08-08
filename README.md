@@ -136,9 +136,6 @@ bash script/CycleNet.sh
 # DCRNN
 bash script/DCRNN.sh
 
-# STDMAE
-bash script/STDMAE.sh
-
 # BigST
 bash script/BigST.sh
 
@@ -150,6 +147,10 @@ bash script/STPGNN.sh
 
 # GWNet
 bash script/GWNet.sh
+
+# STDMAE
+# Please add the paths of the two pre-trained models to the configuration file of STDMAE.
+bash script/STDMAE.sh
 
 # PatchSTG
 bash script/PatchSTG.sh
