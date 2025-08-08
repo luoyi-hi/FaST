@@ -41,7 +41,8 @@ python DataPipeline/generate_idx.py
 
 Dataset statistics are summarized in Table 1.
 
-#### Table 1: **Dataset statistics**
+
+<p align="center"><b>Table&nbsp;1</b> Dataset statistics.</p>
 
 | Data | #nodes | Time interval | Time range           | Std    | Mean   | Features     | #Samples       |
 | ---- | ------ | ------------- | -------------------- | ------ | ------ | ------------ | -------------- |
@@ -106,7 +107,9 @@ python experiments/evaluate.py -cfg  FaST/sd_96_672.py -ckpt Parameters_FaST/sd/
 ```
 ### 1.6 Experimental Results
 Table 2 presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
-#### Table 2: **Performance comparisons**
+
+<p align="center"><b>Table&nbsp;2</b> Performance comparisons.</p>
+
 ![Table 2 Results](results/table2.png)
 
 ### 1.7 Baseline Reproduction
