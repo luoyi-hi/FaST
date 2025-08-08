@@ -33,16 +33,7 @@ Unzip the downloaded data into the `DataPipeline` directory. Then, sequentially 
 
 
 ```shell
-python DataPipeline/generate_data.py
-
-python DataPipeline/generate_data_for_training.py --dataset sd --years 2019
-python DataPipeline/generate_data_for_training.py --dataset gba --years 2019
-python DataPipeline/generate_data_for_training.py --dataset gla --years 2019
-python DataPipeline/generate_data_for_training.py --dataset ca --years 2019
-
-python DataPipeline/process_adj.py
-
-python DataPipeline/generate_idx.py
+bash DataPipeline.sh
 ```
 
 Dataset statistics are summarized in Table 1.
@@ -73,26 +64,32 @@ The generated data will be stored in the `main-master/datasets` directory. In ea
 ### 1.4 Training FaST Model
 
 
-Navigate to the `main-master` directory and run the following commands to train the FaST on different datasets and forecasting lengths:
+Run the following commands to train the FaST on different datasets and forecasting lengths:
 
 ```shell
 # FaST on SD dataset
-python experiments/train_seed.py -c FaST/sd_96_48.py -g 0
-python experiments/train_seed.py -c FaST/sd_96_96.py -g 0
-python experiments/train_seed.py -c FaST/sd_96_192.py -g 0
-python experiments/train_seed.py -c FaST/sd_96_672.py -g 0
+python main-master/experiments/train_seed.py -c FaST/SD_96_48.py -g 0
+python main-master/experiments/train_seed.py -c FaST/SD_96_96.py -g 0
+python main-master/experiments/train_seed.py -c FaST/SD_96_192.py -g 0
+python main-master/experiments/train_seed.py -c FaST/SD_96_672.py -g 0
+
+# FaST on GBA dataset
+python main-master/experiments/train_seed.py -c FaST/GBA_96_48.py -g 0
+python main-master/experiments/train_seed.py -c FaST/GBA_96_96.py -g 0
+python main-master/experiments/train_seed.py -c FaST/GBA_96_192.py -g 0
+python main-master/experiments/train_seed.py -c FaST/GBA_96_672.py -g 0
 
 # FaST on GLA dataset
-python experiments/train_seed.py -c FaST/gla_96_48.py -g 0
-python experiments/train_seed.py -c FaST/gla_96_96.py -g 0
-python experiments/train_seed.py -c FaST/gla_96_192.py -g 0
-python experiments/train_seed.py -c FaST/gla_96_672.py -g 0
+python main-master/experiments/train_seed.py -c FaST/GLA_96_48.py -g 0
+python main-master/experiments/train_seed.py -c FaST/GLA_96_96.py -g 0
+python main-master/experiments/train_seed.py -c FaST/GLA_96_192.py -g 0
+python main-master/experiments/train_seed.py -c FaST/GLA_96_672.py -g 0
 
 # FaST on CA dataset
-python experiments/train_seed.py -c FaST/ca_96_48.py -g 0
-python experiments/train_seed.py -c FaST/ca_96_96.py -g 0
-python experiments/train_seed.py -c FaST/ca_96_192.py -g 0
-python experiments/train_seed.py -c FaST/ca_96_672.py -g 0
+python main-master/experiments/train_seed.py -c FaST/CA_96_48.py -g 0
+python main-master/experiments/train_seed.py -c FaST/CA_96_96.py -g 0
+python main-master/experiments/train_seed.py -c FaST/CA_96_192.py -g 0
+python main-master/experiments/train_seed.py -c FaST/CA_96_672.py -g 0
 ```
 
 ### 1.5 FaST Model Reproduction: Reproducing FaST's experiment results using our trained parameters
@@ -106,10 +103,7 @@ To reproduce the results on the SD dataset, please execute the following command
 
 
 ``` shell
-python experiments/evaluate.py -cfg  FaST/sd_96_48.py -ckpt Parameters_FaST/sd/96_48/FaST_best_val_MAE.pt -g 0
-python experiments/evaluate.py -cfg  FaST/sd_96_96.py -ckpt Parameters_FaST/sd/96_96/FaST_best_val_MAE.pt -g 0
-python experiments/evaluate.py -cfg  FaST/sd_96_192.py -ckpt Parameters_FaST/sd/96_192/FaST_best_val_MAE.pt -g 0
-python experiments/evaluate.py -cfg  FaST/sd_96_672.py -ckpt Parameters_FaST/sd/96_672/FaST_best_val_MAE.pt -g 0
+bash Reproduce.sh
 ```
 ### 1.6 Experimental Results
 Table 2 presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
@@ -124,142 +118,45 @@ Use the following commands to reproduce baseline models:
 
 ```shell
 # STID
-# STID on SD dataset
-python experiments/train_seed.py -c baselines/STID/sd_96_48.py -g 0
-python experiments/train_seed.py -c baselines/STID/sd_96_96.py -g 0
-python experiments/train_seed.py -c baselines/STID/sd_96_192.py -g 0
-python experiments/train_seed.py -c baselines/STID/sd_96_672.py -g 0
-# STID on GLA dataset
-python experiments/train_seed.py -c baselines/STID/gla_96_48.py -g 0
-python experiments/train_seed.py -c baselines/STID/gla_96_96.py -g 0
-python experiments/train_seed.py -c baselines/STID/gla_96_192.py -g 0
-python experiments/train_seed.py -c baselines/STID/gla_96_672.py -g 0
-# STID on CA dataset
-python experiments/train_seed.py -c baselines/STID/ca_96_48.py -g 0
-python experiments/train_seed.py -c baselines/STID/ca_96_96.py -g 0
-python experiments/train_seed.py -c baselines/STID/ca_96_192.py -g 0
-python experiments/train_seed.py -c baselines/STID/ca_96_672.py -g 0
+bash script/STID.sh
 
 # DLinear
-# DLinear on SD dataset
-python experiments/train_seed.py -c baselines/DLinear/sd_96_48.py -g 0
-python experiments/train_seed.py -c baselines/DLinear/sd_96_96.py -g 0
-python experiments/train_seed.py -c baselines/DLinear/sd_96_192.py -g 0
-python experiments/train_seed.py -c baselines/DLinear/sd_96_672.py -g 0
-# DLinear on GLA dataset
-python experiments/train_seed.py -c baselines/DLinear/gla_96_48.py -g 0
-python experiments/train_seed.py -c baselines/DLinear/gla_96_96.py -g 0
-python experiments/train_seed.py -c baselines/DLinear/gla_96_192.py -g 0
-python experiments/train_seed.py -c baselines/DLinear/gla_96_672.py -g 0
-# DLinear on CA dataset
-python experiments/train_seed.py -c baselines/DLinear/ca_96_48.py -g 0
-python experiments/train_seed.py -c baselines/DLinear/ca_96_96.py -g 0
-python experiments/train_seed.py -c baselines/DLinear/ca_96_192.py -g 0
-python experiments/train_seed.py -c baselines/DLinear/ca_96_672.py -g 0
+bash script/DLinear.sh
 
 # NHITS
-# NHITS on SD dataset
-python experiments/train_seed.py -c baselines/NHiTS/sd_96_48.py -g 0
-python experiments/train_seed.py -c baselines/NHiTS/sd_96_96.py -g 0
-python experiments/train_seed.py -c baselines/NHiTS/sd_96_192.py -g 0
-python experiments/train_seed.py -c baselines/NHiTS/sd_96_672.py -g 0
-# NHITS on GLA dataset
-python experiments/train_seed.py -c baselines/NHiTS/gla_96_48.py -g 0
-python experiments/train_seed.py -c baselines/NHiTS/gla_96_96.py -g 0
-python experiments/train_seed.py -c baselines/NHiTS/gla_96_192.py -g 0
-python experiments/train_seed.py -c baselines/NHiTS/gla_96_672.py -g 0
-# NHITS on CA dataset
-python experiments/train_seed.py -c baselines/NHiTS/ca_96_48.py -g 0
-python experiments/train_seed.py -c baselines/NHiTS/ca_96_96.py -g 0
-python experiments/train_seed.py -c baselines/NHiTS/ca_96_192.py -g 0
-python experiments/train_seed.py -c baselines/NHiTS/ca_96_672.py -g 0
+bash script/NHITS.sh
 
 # CycleNet
-# CycleNet on SD dataset
-python experiments/train_seed.py -c baselines/CycleNet/sd_96_48.py -g 0
-python experiments/train_seed.py -c baselines/CycleNet/sd_96_96.py -g 0
-python experiments/train_seed.py -c baselines/CycleNet/sd_96_192.py -g 0
-python experiments/train_seed.py -c baselines/CycleNet/sd_96_672.py -g 0
-# CycleNet on GLA dataset
-python experiments/train_seed.py -c baselines/CycleNet/gla_96_48.py -g 0
-python experiments/train_seed.py -c baselines/CycleNet/gla_96_96.py -g 0
-python experiments/train_seed.py -c baselines/CycleNet/gla_96_192.py -g 0
-python experiments/train_seed.py -c baselines/CycleNet/gla_96_672.py -g 0
-# CycleNet on CA dataset
-python experiments/train_seed.py -c baselines/CycleNet/ca_96_48.py -g 0
-python experiments/train_seed.py -c baselines/CycleNet/ca_96_96.py -g 0
-python experiments/train_seed.py -c baselines/CycleNet/ca_96_192.py -g 0
-python experiments/train_seed.py -c baselines/CycleNet/ca_96_672.py -g 0
+bash script/CycleNet.sh
 
 # DCRNN
-# DCRNN on SD dataset
-python experiments/train_seed.py -c baselines/DCRNN/sd_96_48.py -g 0
-python experiments/train_seed.py -c baselines/DCRNN/sd_96_96.py -g 0
+bash script/DCRNN.sh
 
 # STDMAE
-# STDMAE on SD dataset
-python experiments/train_seed.py -c baselines/STDMAE/SMAE_sd_96_48.py -g 0
-python experiments/train_seed.py -c baselines/STDMAE/SMAE_sd_96_96.py -g 0
-python experiments/train_seed.py -c baselines/STDMAE/SMAE_sd_96_192.py -g 0
-python experiments/train_seed.py -c baselines/STDMAE/SMAE_sd_96_672.py -g 0
-python experiments/train_seed.py -c baselines/STDMAE/TMAE_sd_96_48.py -g 0
-python experiments/train_seed.py -c baselines/STDMAE/TMAE_sd_96_96.py -g 0
-python experiments/train_seed.py -c baselines/STDMAE/TMAE_sd_96_192.py -g 0
-python experiments/train_seed.py -c baselines/STDMAE/TMAE_sd_96_672.py -g 0
-python experiments/train_seed.py -c baselines/STDMAE/STDMAE_sd_96_48.py -g 0
-python experiments/train_seed.py -c baselines/STDMAE/STDMAE_sd_96_96.py -g 0
-python experiments/train_seed.py -c baselines/STDMAE/STDMAE_sd_96_192.py -g 0
-python experiments/train_seed.py -c baselines/STDMAE/STDMAE_sd_96_672.py -g 0
+bash script/STDMAE.sh
 
 # BigST
-# BigST on SD dataset
-python experiments/train_seed.py -c baselines/BigST/sd_96_48.py -g 0
-python experiments/train_seed.py -c baselines/BigST/sd_96_48_2.py -g 0
-python experiments/train_seed.py -c baselines/BigST/sd_96_96.py -g 0
-python experiments/train_seed.py -c baselines/BigST/sd_96_96_2.py -g 0
-python experiments/train_seed.py -c baselines/BigST/sd_96_192.py -g 0
-python experiments/train_seed.py -c baselines/BigST/sd_96_192_2.py -g 0
-python experiments/train_seed.py -c baselines/BigST/sd_96_672.py -g 0
-python experiments/train_seed.py -c baselines/BigST/sd_96_672_2.py -g 0
+bash script/BigST.sh
 
 # STGCN
-# STGCN on SD dataset
-python experiments/train_seed.py -c baselines/STGCN/sd_96_48.py -g 0
-python experiments/train_seed.py -c baselines/STGCN/sd_96_96.py -g 0
-python experiments/train_seed.py -c baselines/STGCN/sd_96_192.py -g 0
-python experiments/train_seed.py -c baselines/STGCN/sd_96_672.py -g 0
+bash script/STGCN.sh
+
+# STPGNN
+bash script/STPGNN.sh
 
 # GWNet
-# GWNet on SD dataset
-python experiments/train_seed.py -c baselines/GWNet/sd_96_48.py -g 0
-python experiments/train_seed.py -c baselines/GWNet/sd_96_96.py -g 0
-python experiments/train_seed.py -c baselines/GWNet/sd_96_192.py -g 0
-python experiments/train_seed.py -c baselines/GWNet/sd_96_672.py -g 0
+bash script/GWNet.sh
+
+# PatchSTG
+bash script/PatchSTG.sh
 
 # SGP
 # Please refer to: ‘https://github.com/Graph-Machine-Learning-Group/sgp’ to configure the relevant environment
-# Switch to the sgp directory
-cd baselines/sgp-main
-# SGP on SD dataset
-python experiments/run_traffic_sgps_sd_96_48.py 
-python experiments/run_traffic_sgps_sd_96_96.py 
-python experiments/run_traffic_sgps_sd_96_192.py 
-python experiments/run_traffic_sgps_sd_96_672.py 
+bash script/SGP.sh
 
 # RPMixer
 # Please refer to: ‘https://sites.google.com/view/rpmixer’ to configure the relevant environment
-# Switch to the RPMixer directory
-cd baselines/RPMixer
-# RPMixer on SD dataset
-python sd_96_48.py
-python sd_96_96.py
-python sd_96_192.py
-python sd_96_672.py
-# RPMixer on GLA dataset
-python gla_96_48.py
-python gla_96_96.py
-# RPMixer on CA dataset
-python ca_96_48.py
+bash script/SGP.sh
 
 ```
 
