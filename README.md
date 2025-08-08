@@ -99,7 +99,7 @@ Due to storage limitations in the anonymous repository, we only release trained 
 The trained parameters for other datasets will be released to a publicly accessible cloud drive after the paper is accepted, ensuring full reproducibility.
 
 
-To reproduce the results on the SD dataset, please execute the following commands in the `main-master` directory:
+To reproduce the results on the SD dataset, please execute the following commands:
 
 
 ``` shell
