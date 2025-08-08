@@ -1,8 +1,10 @@
+from torch.amp import autocast, GradScaler
 import logging
 import os
 import time
 from abc import ABCMeta, abstractmethod
 from typing import Dict, Optional, Tuple, Union
+from torch.cuda.amp import autocast, GradScaler
 
 import setproctitle
 import torch
@@ -30,9 +32,6 @@ from tqdm import tqdm
 
 from ..utils import get_dataset_name
 from . import optim
-from .base_epoch_plot import epoch_plot
-
-
 
 class BaseEpochRunner(metaclass=ABCMeta):
     """
@@ -91,6 +90,7 @@ class BaseEpochRunner(metaclass=ABCMeta):
         self.ckpt_save_strategy = None
         self.num_epochs = None
         self.start_epoch = None
+        self.fp16 = cfg.get("fp16", False)
 
         self.val_interval = cfg.get("VAL", {}).get("INTERVAL", 1)
         self.test_interval = cfg.get("TEST", {}).get("INTERVAL", 1)
@@ -113,10 +113,7 @@ class BaseEpochRunner(metaclass=ABCMeta):
 
         # declare meter pool
         self.meter_pool = None
-        
-        self.meter_pool_bts = None
-        self.meter_pool_zh = None
-
+    
         # declare tensorboard_writer
         self.tensorboard_writer = None
 
@@ -171,9 +168,7 @@ class BaseEpochRunner(metaclass=ABCMeta):
 
         # complie model
         if cfg.get("TRAIN.COMPILE_MODEL", False):
-            # get current torch version
             current_version = torch.__version__
-            # torch.compile() is only available in torch>=2.0
             if version.parse(current_version) >= version.parse("2.0"):
                 self.logger.info("Compile model with torch.compile")
                 model = torch.compile(model)
@@ -220,8 +215,6 @@ class BaseEpochRunner(metaclass=ABCMeta):
                 cfg["TRAIN.LR_SCHEDULER"], self.optim
             )
             self.logger.info("Set lr_scheduler: {}".format(self.scheduler))
-            self.register_epoch_meter_bts("train/lr", "train", "{:.2e}")
-            self.register_epoch_meter_zh("train/lr", "train", "{:.2e}")
             self.register_epoch_meter("train/lr", "train", "{:.2e}")
 
     def build_train_data_loader(self, cfg: Dict) -> DataLoader:
@@ -337,8 +330,6 @@ class BaseEpochRunner(metaclass=ABCMeta):
 
         # train data loader
         self.train_data_loader = self.build_train_data_loader(cfg)
-        self.register_epoch_meter_bts("train/timebts", "train", "{:.2f} (s)", plt=False)
-        self.register_epoch_meter_zh("train/timezh", "train", "{:.2f} (s)", plt=False)
         self.register_epoch_meter("train/time", "train", "{:.2f} (s)", plt=False)
 
         # create optim
@@ -358,12 +349,6 @@ class BaseEpochRunner(metaclass=ABCMeta):
         # resume
         self.load_model_resume()
 
-        # init tensorboard(after resume)
-        # if is_master():
-        #     self.tensorboard_writer = SummaryWriter(
-        #         os.path.join(self.ckpt_save_dir, "tensorboard"),
-        #         purge_step=(self.start_epoch + 1) if self.start_epoch != 0 else None,
-        #     )
 
         # init validation
         if cfg.has("VAL"):
@@ -383,8 +368,6 @@ class BaseEpochRunner(metaclass=ABCMeta):
         self.logger.info("Initializing validation.")
         self.val_interval = cfg.get("VAL.INTERVAL", 1)
         self.val_data_loader = self.build_val_data_loader(cfg)
-        self.register_epoch_meter_bts("val/timebts", "val", "{:.2f} (s)", plt=False)
-        self.register_epoch_meter_zh("val/timezh", "val", "{:.2f} (s)", plt=False)
         self.register_epoch_meter("val/time", "val", "{:.2f} (s)", plt=False)
 
     @master_only
@@ -398,8 +381,6 @@ class BaseEpochRunner(metaclass=ABCMeta):
 
         self.test_interval = cfg["TEST"].get("INTERVAL", 1)
         self.test_data_loader = self.build_test_data_loader(cfg)
-        self.register_epoch_meter_bts("test/timebts", "test", "{:.2f} (s)", plt=False)
-        self.register_epoch_meter_zh("test/timezh", "test", "{:.2f} (s)", plt=False)
         self.register_epoch_meter("test/time", "test", "{:.2f} (s)", plt=False)
 
     # endregion Initialization Functions
@@ -461,23 +442,25 @@ class BaseEpochRunner(metaclass=ABCMeta):
             )
 
             # data loop
-            for iter_index, data in enumerate(data_loader):
-                loss = self.train_iters(epoch, iter_index, data)
-                if loss is not None:
-                    self.backward(loss)
+            if self.fp16:
+                for iter_index, data in enumerate(data_loader):
+                    with autocast():
+                        loss = self.train_iters(epoch, iter_index, data)
+                        if loss is not None:
+                            self.backward(loss)
+            else:
+                for iter_index, data in enumerate(data_loader):
+                    loss = self.train_iters(epoch, iter_index, data)
+                    if loss is not None:
+                        self.backward(loss)
             # update lr_scheduler
             if self.scheduler is not None:
                 self.scheduler.step()
 
             epoch_end_time = time.time()
             # epoch time
-            self.update_epoch_meter_bts("train/timebts", epoch_end_time - epoch_start_time)
-            self.update_epoch_meter_zh("train/timezh", epoch_end_time - epoch_start_time)
             self.update_epoch_meter("train/time", epoch_end_time - epoch_start_time)
             self.on_epoch_end(epoch)
-
-            # print("!!!!!!!!",epoch)(ours)
-            epoch_plot(self.log_file_path)
 
             expected_end_time = train_time_predictor.get_expected_end_time(epoch)
 
@@ -531,17 +514,9 @@ class BaseEpochRunner(metaclass=ABCMeta):
             self.val_iters(iter_index, data)
 
         val_end_time = time.time()
-        self.update_epoch_meter_bts("val/timebts", val_end_time - val_start_time)
-        self.update_epoch_meter_zh("val/timezh", val_end_time - val_start_time)
         self.update_epoch_meter("val/time", val_end_time - val_start_time)
         # print val meters
-        self.print_epoch_meters_bts("val")
-        self.print_epoch_meters_zh("val")
         self.print_epoch_meters("val")
-        
-        # if train_epoch is not None:
-        #     # tensorboard plt meters
-        #     self.plt_epoch_meters("val", train_epoch // self.val_interval)
 
         self.on_validating_end(train_epoch)
 
@@ -567,11 +542,7 @@ class BaseEpochRunner(metaclass=ABCMeta):
             self.test_iters_4OOM(iter_index, data)
 
         test_end_time = time.time()
-        self.update_epoch_meter_bts("test/timebts", test_end_time - test_start_time)
-        self.update_epoch_meter_zh("test/timezh", test_end_time - test_start_time)
         self.update_epoch_meter("test/time", test_end_time - test_start_time)
-        self.print_epoch_meters_bts("test")
-        self.print_epoch_meters_zh("test")
         self.print_epoch_meters("test")
 
     def test_iters_4OOM(
@@ -586,7 +557,7 @@ class BaseEpochRunner(metaclass=ABCMeta):
         self,
         cfg: Optional[Dict] = None,
         train_epoch: Optional[int] = None,
-        save_metrics: bool = True,
+        save_metrics: bool = False,
         save_results: bool = False,
     ) -> None:
         """
@@ -607,13 +578,6 @@ class BaseEpochRunner(metaclass=ABCMeta):
         test_start_time = time.time()
         self.model.eval()
 
-        # execute the test process
-        # self.test(
-        #     train_epoch=train_epoch,
-        #     save_results=False,
-        #     save_metrics=False,
-        # )#关闭全量测试，使用无偏迭代
-
         # tqdm process bar
         data_iter = tqdm(self.test_data_loader)
 
@@ -623,15 +587,8 @@ class BaseEpochRunner(metaclass=ABCMeta):
 
 
         test_end_time = time.time()
-        self.update_epoch_meter_bts("test/timebts", test_end_time - test_start_time)
-        self.update_epoch_meter_zh("test/timezh", test_end_time - test_start_time)
         self.update_epoch_meter("test/time", test_end_time - test_start_time)
-
-        self.print_epoch_meters_bts("test")
-        self.print_epoch_meters_zh("test")
         self.print_epoch_meters("test")
-        # if train_epoch is not None:
-        #     self.plt_epoch_meters("test", train_epoch // self.test_interval)
 
         # logging here for intuitiveness
         if save_results:
@@ -728,8 +685,6 @@ class BaseEpochRunner(metaclass=ABCMeta):
         self.logger.info("Epoch {:d} / {:d}".format(epoch, self.num_epochs))
         # update lr meter
         if self.scheduler is not None:
-            self.update_epoch_meter_bts("train/lr", self.scheduler.get_last_lr()[0])
-            self.update_epoch_meter_zh("train/lr", self.scheduler.get_last_lr()[0])
             self.update_epoch_meter("train/lr", self.scheduler.get_last_lr()[0])
 
         # set epoch for sampler in distributed mode
@@ -751,15 +706,8 @@ class BaseEpochRunner(metaclass=ABCMeta):
         """
 
         # print training meters
-        self.print_epoch_meters_bts("train")
-        self.print_epoch_meters_zh("train")
         self.print_epoch_meters("train")
         
-
-        
-        # plot training meters to TensorBoard
-        # self.plt_epoch_meters("train", epoch)
-        # perform validation if configured
         if self.val_data_loader is not None and epoch % self.val_interval == 0:
             self.validate(train_epoch=epoch)
         # perform testing if configured
@@ -768,8 +716,6 @@ class BaseEpochRunner(metaclass=ABCMeta):
         # save the model checkpoint
         self.save_model(epoch)
         # reset epoch meters
-        self.reset_epoch_meters_bts()
-        self.reset_epoch_meters_zh()
         self.reset_epoch_meters()
 
     @master_only
@@ -811,10 +757,6 @@ class BaseEpochRunner(metaclass=ABCMeta):
             cfg (Dict): Configuration.
             train_epoch (Optional[int]): End epoch if in training process.
         """
-
-        # if is_master():
-        #     # close tensorboard writer
-        #     self.tensorboard_writer.close()
 
         if hasattr(cfg, "TEST"):
             # evaluate the best model on the test set
@@ -1064,7 +1006,7 @@ class BaseEpochRunner(metaclass=ABCMeta):
     @master_only
     def register_epoch_meter(self, name, meter_type, fmt="{:f}", plt=True) -> None:
         if self.meter_pool is None:
-            self.meter_pool = MyMeterPool()#MeterPool()
+            self.meter_pool = MyMeterPool()
         self.meter_pool.register(name, meter_type, fmt, plt)
 
     @master_only
@@ -1083,50 +1025,3 @@ class BaseEpochRunner(metaclass=ABCMeta):
     def reset_epoch_meters(self) -> None:
         self.meter_pool.reset()
 
-    # endregion meters and tensorboard
-    
-    #bts
-    @master_only
-    def register_epoch_meter_bts(self, name, meter_type, fmt="{:f}", plt=True) -> None:
-        if self.meter_pool_bts is None:
-            self.meter_pool_bts = MeterPool()
-        self.meter_pool_bts.register(name, meter_type, fmt, plt)
-
-    @master_only
-    def update_epoch_meter_bts(self, name, value, n=1) -> None:
-        self.meter_pool_bts.update(name, value, n)
-
-    @master_only
-    def print_epoch_meters_bts(self, meter_type) -> None:
-        self.meter_pool_bts.print_meters(meter_type, self.logger)
-
-    @master_only
-    def plt_epoch_meters_bts(self, meter_type, step) -> None:
-        self.meter_pool_bts.plt_meters(meter_type, step, self.tensorboard_writer)
-
-    @master_only
-    def reset_epoch_meters_bts(self) -> None:
-        self.meter_pool_bts.reset()
-    
-    #zihao
-    @master_only
-    def register_epoch_meter_zh(self, name, meter_type, fmt="{:f}", plt=True) -> None:
-        if self.meter_pool_zh is None:
-            self.meter_pool_zh = MeterPool()
-        self.meter_pool_zh.register(name, meter_type, fmt, plt)    
-    
-    @master_only
-    def update_epoch_meter_zh(self, name, value, n=1) -> None:
-        self.meter_pool_zh.update(name, value, n)
-
-    @master_only
-    def print_epoch_meters_zh(self, meter_type) -> None:
-        self.meter_pool_zh.print_meters(meter_type, self.logger)
-
-    @master_only
-    def plt_epoch_meters_zh(self, meter_type, step) -> None:
-        self.meter_pool_zh.plt_meters(meter_type, step, self.tensorboard_writer)
-
-    @master_only
-    def reset_epoch_meters_zh(self) -> None:
-        self.meter_pool_zh.reset() 

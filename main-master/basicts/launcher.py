@@ -74,14 +74,6 @@ def evaluation_func(
         else:
             logger.info(f"Loading model checkpoint from {ckpt_path}")
             runner.load_model(ckpt_path=ckpt_path, strict=strict)
-
-        if (cfg["DATASET"]["NAME"] == "gla" or cfg["DATASET"]["NAME"] == "ca") and (
-            cfg["DATASET"]["PARAM"]["output_len"] == 192
-            or cfg["DATASET"]["PARAM"]["output_len"] == 672
-        ):
-            runner.Test4OOM(cfg=cfg)
-        else:
-            # start the evaluation pipeline
             runner.test_pipeline(cfg=cfg, save_metrics=False, save_results=False)
 
     except BaseException as e:

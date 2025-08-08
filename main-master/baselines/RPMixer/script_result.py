@@ -112,7 +112,16 @@ def main():
     output_str = ""
 
     data_names = [
-        "ca_his_2019_agg_48",
+        "sd_his_2019_agg_48",
+        "sd_his_2019_agg_96",
+        "sd_his_2019_agg_192",
+        "sd_his_2019_agg_672",
+        "gba_his_2019_agg_48",
+        "gba_his_2019_agg_96",
+        "gba_his_2019_agg_192",
+        "gla_his_2019_agg_48",
+        "gla_his_2019_agg_96",
+        "ca_his_2019_agg_48"
     ]
     method_names = [
         "rpm_96",

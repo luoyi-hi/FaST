@@ -33,7 +33,7 @@ def parse_args():
     parser.add_argument(
         "-c",
         "--cfg",
-        default="main-master/FaST/sd_96_48.py",
+        default="FaST/1.py",
         help="training config",
     )
     parser.add_argument("-g", "--gpus", default="0", help="visible gpus")

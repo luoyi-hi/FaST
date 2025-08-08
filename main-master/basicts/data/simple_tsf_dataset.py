@@ -244,3 +244,90 @@ class MyTimeSeries(BaseDataset):
 
     def __len__(self) -> int:
         return len(self.data) - self.input_len - self.output_len + 1
+
+
+class MyTimeSeries2(BaseDataset):
+    def __init__(
+        self,
+        dataset_name: str,
+        train_val_test_ratio: List[float],
+        mode: str,
+        input_len: int,
+        output_len: int,
+        group_size: int | None = None,     # ← ① 可选，默认 None 表示“全部节点”
+        overlap: bool = False,
+        logger: logging.Logger | None = None,
+    ) -> None:
+        super().__init__(dataset_name, train_val_test_ratio,
+                         mode, input_len, output_len, overlap)
+        self.logger = logger
+        self.data_file_path = f"datasets/{dataset_name}"
+
+        self.description = self._load_description()
+        raw = self._load_data()            # raw.shape == (T, N, D)
+
+        # ② 若用户未指定 group_size，则用 N
+        if group_size is None or group_size <= 0:
+            group_size = raw.shape[1]       # N
+        self.group_size = group_size
+
+        N = raw.shape[1]                       # 原始节点数
+        S = (self.group_size - N % self.group_size) % self.group_size
+
+        if S:                                   # 需要补节点
+            # ① 生成要复制的节点索引，例如 N=5, S=8 -> [0,1,2,3,4,0,1,2]
+            pad_idx = np.arange(S) % N
+            # ② 取出对应节点形成补丁，并拼接在节点维度
+            pad = raw[:, pad_idx, :]            # (T, S, D)
+            raw = np.concatenate([raw, pad], axis=1)  # (T, N+S, D)
+
+        self.data = raw
+        self.num_groups   = (N + S) // group_size
+        self.time_samples = len(self.data) - input_len - output_len + 1
+
+    # --------------------------------------------------------
+
+    def _load_data(self) -> np.ndarray:
+        sample_path = "/" + str(self.input_len) + "_" + str(self.output_len)
+        data = np.load(self.data_file_path + "/his.npz")
+        Traffic = data["data"]
+        data = Traffic
+
+        train_idx = np.load(self.data_file_path + sample_path + "/idx_train.npy")
+        val_idx = np.load(self.data_file_path + sample_path + "/idx_val.npy")
+        test_idx = np.load(self.data_file_path + sample_path + "/idx_test.npy")
+
+        if self.mode == "train":
+            return data[
+                train_idx[0] - self.output_len - self.input_len + 1 : train_idx[-1] + 1
+            ].copy()
+        elif self.mode == "valid":
+            return data[
+                val_idx[0] - self.output_len - self.input_len + 1 : val_idx[-1] + 1
+            ].copy()
+        else:
+            return data[test_idx[0] - self.output_len - self.input_len + 1 :].copy()
+
+    def __len__(self) -> int:
+        return self.time_samples * self.num_groups
+    
+    def _load_description(self) -> dict:
+        pass
+
+    def __getitem__(self, index: int) -> dict:
+        # 将平面 index 拆成 “时间窗索引 + 节点组索引”
+        time_idx = index // self.num_groups
+        group_idx = index % self.num_groups
+
+        node_start = group_idx * self.group_size
+        node_end = node_start + self.group_size
+        t0, t1, t2 = time_idx, time_idx + self.input_len, time_idx + self.input_len + self.output_len
+
+        history = self.data[t0:t1, node_start:node_end].astype(np.float32)
+        future  = self.data[t1:t2, node_start:node_end].astype(np.float32)
+
+        return {
+            "inputs": torch.from_numpy(history),   # (Input, M, D)
+            "target": torch.from_numpy(future),    # (Output, M, D)
+            # 可选：mask = 0/1，区分真实节点与 padding 节点
+        }

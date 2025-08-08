@@ -5,20 +5,25 @@ from easydict import EasyDict
 
 sys.path.append(os.path.abspath(__file__ + "/../../.."))
 
-from basicts.metrics import masked_mae, masked_mape, masked_rmse
+from basicts.metrics import masked_mae, masked_mape, masked_rmse, masked_ae, masked_ape, masked_se
 from basicts.data import MyTimeSeries
 from basicts.runners import SimpleTimeSeriesForecastingRunner
-from basicts.scaler import MyZScoreScaler
+from basicts.scaler import SampleFirstZScoreScaler
 from basicts.utils import get_regular_settings, load_adj
 
 from .arch import GraphWaveNet
 
 ############################## Hot Parameters ##############################
 # Dataset & Metrics configuration
-DATA_NAME = "sd"  # Dataset name
+DATA_NAME = 'SD'
+num_nodes = 716
+INPUT_LEN = 96
+OUTPUT_LEN = 48
+NUM_EPOCHS = 50
+BATCH_SIZE = 32
+
+
 regular_settings = get_regular_settings(DATA_NAME)
-INPUT_LEN = 96  # Length of input sequence
-OUTPUT_LEN = 48  # Length of output sequence
 TRAIN_VAL_TEST_RATIO = regular_settings[
     "TRAIN_VAL_TEST_RATIO"
 ]  # Train/Validation/Test split ratios
@@ -31,7 +36,7 @@ NULL_VAL = regular_settings["NULL_VAL"]  # Null value in the data
 MODEL_ARCH = GraphWaveNet
 adj_mx, _ = load_adj("datasets/" + DATA_NAME + "/adj_mx.pkl", "doubletransition")
 MODEL_PARAM = {
-    "num_nodes": 716,
+    "num_nodes": num_nodes,
     "supports": [torch.tensor(i) for i in adj_mx],
     "dropout": 0.3,
     "gcn_bool": True,
@@ -43,11 +48,10 @@ MODEL_PARAM = {
     "dilation_channels": 32,
     "skip_channels": 256,
     "end_channels": 512,
-    "kernel_size": 2,
+    "kernel_size": 2*(INPUT_LEN//12),
     "blocks": 4,
     "layers": 2,
 }
-NUM_EPOCHS = 100
 
 ############################## General Configuration ##############################
 CFG = EasyDict()
@@ -75,7 +79,7 @@ CFG.DATASET.PARAM = EasyDict(
 ############################## Scaler Configuration ##############################
 CFG.SCALER = EasyDict()
 # Scaler settings
-CFG.SCALER.TYPE = MyZScoreScaler  # Scaler class
+CFG.SCALER.TYPE = SampleFirstZScoreScaler  # Scaler class
 CFG.SCALER.PARAM = EasyDict(
     {
         "dataset_name": DATA_NAME,
@@ -102,9 +106,9 @@ CFG.METRICS = EasyDict()
 # Metrics settings
 CFG.METRICS.FUNCS = EasyDict(
     {
-        "MAE": masked_mae,
-        "MAPE": masked_mape,
-        "RMSE": masked_rmse,
+        "MAE": masked_ae,
+        "RMSE": masked_se,
+        "MAPE": masked_ape,
     }
 )
 CFG.METRICS.TARGET = "MAE"
@@ -132,22 +136,31 @@ CFG.TRAIN.LR_SCHEDULER.TYPE = "MultiStepLR"
 CFG.TRAIN.LR_SCHEDULER.PARAM = {"milestones": [1, 50], "gamma": 0.5}
 # Train data loader settings
 CFG.TRAIN.DATA = EasyDict()
-CFG.TRAIN.DATA.BATCH_SIZE = 32
+CFG.TRAIN.DATA.BATCH_SIZE = BATCH_SIZE
 CFG.TRAIN.DATA.SHUFFLE = True
 # Gradient clipping settings
 CFG.TRAIN.CLIP_GRAD_PARAM = {"max_norm": 5.0}
+CFG.TRAIN.DATA.PREFETCH = True 
+CFG.TRAIN.DATA.NUM_WORKERS = 4
+CFG.TRAIN.DATA.PIN_MEMORY = True 
 
 ############################## Validation Configuration ##############################
 CFG.VAL = EasyDict()
 CFG.VAL.INTERVAL = 1
 CFG.VAL.DATA = EasyDict()
-CFG.VAL.DATA.BATCH_SIZE = 32
+CFG.VAL.DATA.BATCH_SIZE = BATCH_SIZE
+CFG.VAL.DATA.PREFETCH = True 
+CFG.VAL.DATA.NUM_WORKERS = 4 
+CFG.VAL.DATA.PIN_MEMORY = True 
 
 ############################## Test Configuration ##############################
 CFG.TEST = EasyDict()
 CFG.TEST.INTERVAL = 200
 CFG.TEST.DATA = EasyDict()
-CFG.TEST.DATA.BATCH_SIZE = 32
+CFG.TEST.DATA.BATCH_SIZE = BATCH_SIZE
+CFG.TEST.DATA.PREFETCH = True 
+CFG.TEST.DATA.NUM_WORKERS = 4 
+CFG.TEST.DATA.PIN_MEMORY = True 
 
 ############################## Evaluation Configuration ##############################
 

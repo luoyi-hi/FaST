@@ -90,5 +90,5 @@ class STDMAE(nn.Module):
             .transpose(1, 2)
             .unsqueeze(-1)
         )
-        y_hat = y_hat[:, :, :, 0, :]
+        
         return y_hat

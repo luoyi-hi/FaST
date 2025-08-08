@@ -57,6 +57,25 @@ def load_dataset_data(dataset_name: str) -> np.ndarray:
     data = np.memmap(dat_file_path, mode='r', dtype=np.float32, shape=tuple(shape)).copy()
     return data
 
+def load_dataset_data2(dataset_name: str) -> np.ndarray:
+    """
+    Load data from a .npz file.
+
+    Args:
+        dataset_name (str): Dataset name (used to build file path).
+
+    Returns:
+        np.ndarray: Loaded data.
+    """
+    npz_file_path = f'datasets/{dataset_name}/his.npz'
+    data_dict = np.load(npz_file_path)
+    
+    # 假设你只存储了一个主数组在其中
+    # 如果存储为：np.savez('data.npz', data=data)，则可以写为：
+    data = data_dict['data']
+    
+    return data
+
 def load_pkl(pickle_file: str) -> object:
     """
     Load data from a pickle file.

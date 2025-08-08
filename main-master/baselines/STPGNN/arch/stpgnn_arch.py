@@ -50,10 +50,9 @@ class gcn(nn.Module):
         return h
     
 class pgcn(nn.Module):
-    def __init__(self, c_in, c_out, dropout, support_len=3, order=2, temp=1):
+    def __init__(self, c_in, c_out, dropout, support_len=3, order=2):
         super(pgcn, self).__init__()
         self.nconv = nconv()
-        self.temp = temp
         c_in = (order * support_len + 1) * c_in
         self.mlp = linear(c_in, c_out)
         self.dropout = dropout
@@ -71,7 +70,7 @@ class pgcn(nn.Module):
 
         h = torch.cat(out, dim=1)
         h = self.mlp(h)
-        h = h[:,:,:,-h.size(3):-self.temp]
+        h = h[:,:,:,-h.size(3):]
         return h
 
 class STPGNN(nn.Module):
@@ -149,8 +148,8 @@ class STPGNN(nn.Module):
                                                        kernel_size=(1, 1)))
                 
                 self.pgconv.append(
-                    pgcn(dilation_channels, residual_channels, dropout, support_len=self.supports_len, order=order, temp=new_dilation))
-                
+                    pgcn(dilation_channels, residual_channels, dropout, support_len=self.supports_len, order=order))
+
                 self.gconv.append(
                     gcn(dilation_channels, residual_channels, dropout, support_len=self.supports_len, order=order))
                 
@@ -166,7 +165,7 @@ class STPGNN(nn.Module):
 
         self.relu = nn.ReLU(inplace=True)
 
-        self.end_conv_1 = nn.Conv2d(in_channels=skip_channels * (12 + 10 + 9 + 7 + 6 + 4 + 3 + 1),
+        self.end_conv_1 = nn.Conv2d(in_channels=skip_channels,
                                     out_channels=end_channels,
                                     kernel_size=(1, 1),
                                     bias=True)
@@ -228,17 +227,18 @@ class STPGNN(nn.Module):
             gate = self.gate_convs[i](residual)
             gate = torch.sigmoid(gate)
             x = filter * gate
-            x_a = self.pgconv[i](residual, supports_a)
             x = self.gconv[i](x, supports)
+            x_a = self.pgconv[i](residual[:, :, :, -x.size(3):], supports_a) #[:, :, :, -x.size(3)-1:]
             alpha_sigmoid = torch.sigmoid(self.alpha)  
             x = alpha_sigmoid * x_a +  (1 - alpha_sigmoid) * x
             x = x + residual[:, :, :, -x.size(3):]
             s = x
             s = self.skip_convs[i](s)
-            if isinstance(skip, int):  # B F N T
-                skip = s.transpose(2, 3).reshape([s.shape[0], -1, s.shape[2], 1]).contiguous()
-            else:
-                skip = torch.cat([s.transpose(2, 3).reshape([s.shape[0], -1, s.shape[2], 1]), skip], dim=1).contiguous()
+            try:
+                skip = skip[:, :, :, -s.size(3) :]
+            except:
+                skip = 0
+            skip = s + skip
             x = self.normal[i](x)
 
         x = F.relu(skip)
