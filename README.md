@@ -12,7 +12,9 @@ Our model is implemented based on the `BasicTS` framework. The FaST uses the Ada
 
 The CA dataset used in our report was collected from the Performance Measurement System (PeMS) by the authors of [1], and we obtained the data through that work. The San Diego (SD) and Greater Los Angeles (GLA) areas are two representative subregions selected from the CA dataset, containing 716 and 3834 sensors, respectively. 
 
+
 The dataset can be downloaded from the following link: https://www.kaggle.com/datasets/liuxu77/largest. The link contains seven files. To reproduce our experiment results, you need to download the following three files: `ca_his_raw_2019.h5`, `ca_meta.csv`, `ca_rn_adj.npy`.
+
 
 Install environment dependencies using the following command:
 
@@ -20,7 +22,9 @@ Install environment dependencies using the following command:
 pip install -r requirements.txt
 ```
 
+
 Unzip the downloaded data into the `DataPipeline` directory. Then, sequentially use the following commands to generate the traffic data required for model training:
+
 
 ```shell
 python DataPipeline/generate_data.py
@@ -34,6 +38,7 @@ python DataPipeline/process_adj.py
 
 python DataPipeline/generate_idx.py
 ```
+
 Dataset statistics are summarized in Table 1.
 
 #### Table 1: **Dataset statistics**
@@ -52,10 +57,15 @@ For more dataset details, refer to literature [1].
 [1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting. In The Annual Conference on Neural Information Processing Systems. New Orleans, LA, USA.
 
 ### 1.3 Data Generation for Model Training
+
+
 We use the 2019 SD, GLA, and CA datasets. First, we obtain all samples through a sliding window, then split the samples into training, validation, and test sets in a 6:2:2 ratio.
 The generated data will be stored in the `main-master/datasets` directory. In each data directory, the `his.npz` file stores raw traffic flow values along with derived daily and weekly features. The `adj_mx.pkl` file contains the adjacency matrix for the data, and `desc.json` stores the data information. Other folders, such as `{input_len}_{output_len}`, store the sample indices for the training, validation, and test sets for the corresponding forecasting length.
 
+
 ### 1.4 Training FaST Model
+
+
 Navigate to the `main-master` directory and run the following commands to train the FaST on different datasets and forecasting lengths:
 
 ```shell
@@ -84,7 +94,9 @@ Due to storage limitations in the anonymous repository, we only release trained 
 
 The trained parameters for other datasets will be released to a publicly accessible cloud drive after the paper is accepted, ensuring full reproducibility.
 
+
 To reproduce the results on the SD dataset, please execute the following command in the `main-master` directory:
+
 
 ``` shell
 python experiments/evaluate.py -cfg  FaST/sd_96_48.py -ckpt Parameters_FaST/sd/96_48/FaST_best_val_MAE.pt -g 0
