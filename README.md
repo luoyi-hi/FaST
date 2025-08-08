@@ -114,7 +114,7 @@ Table 2 presents the performance comparison of different models on time series f
 
 <p align="center"><b>Table&nbsp;2</b> Performance comparisons.</p>
 
-![Table 2 Results](src/table2.png)
+![Table 2 Results](src/results.png)
 
 ### 1.7 Baseline Reproduction
 
