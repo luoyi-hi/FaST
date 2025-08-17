@@ -8,6 +8,7 @@ class RMSNorm(nn.Module):
     def __init__(self, d, p=-1., eps=1e-8, bias=False):
         """
             Root Mean Square Layer Normalization
+            Zhang B, Sennrich R. Root mean square layer normalization. Advances in neural information processing systems, 2019, 32.
         :param d: model size
         :param p: partial RMSNorm, valid value [0, 1], default -1.0 (disabled)
         :param eps:  epsilon value, default 1e-8
@@ -56,13 +57,6 @@ class TrainableParameterLayer(nn.Module):
     def forward(self, indices):
         return self.parameter[indices]
 
-class RoutingLayer(nn.Module):
-    def __init__(self, router_fea_dim, num_experts):
-        super(RoutingLayer, self).__init__()
-        self.logit_layer = nn.Linear(router_fea_dim, num_experts)
-        
-    def forward(self, x):
-        return F.softmax(self.logit_layer(x), dim=-1)
 
 class HARoutingLayer(nn.Module):
     def __init__(self, router_fea_dim, num_experts, daily_steps, weekly_days, num_nodes):
@@ -79,11 +73,11 @@ class HARoutingLayer(nn.Module):
     def forward(self, x, day_idx, week_idx, node_idx):
         # router logit
         router = self.router_logit_layer(x)
-        # +adaptive_router_day
+        # +adaptive_router_day bias
         router += self.adaptive_router_day(day_idx)
-        # +adaptive_router_week
+        # +adaptive_router_week bias
         router += self.adaptive_router_week(week_idx)
-        # +adaptive_router_node
+        # +adaptive_router_node bias
         router += self.adaptive_router_node(node_idx)
         # Probabilistic
         router = F.softmax(router, dim=-1)
@@ -259,14 +253,9 @@ class FaST(nn.Module):
         
         # instance denorm
         x = x * torch.sqrt(seq_var) + seq_mean
-
         return x.unsqueeze(-1).transpose(2, 1).contiguous()  # prediction:[b, p, n, 1]
 
 
 if __name__ == "__main__":
-    # model = FaST(716, 96, 720)
-    # summary(model, [64, 96, 716, 3])
-
-    node_idx = to_device(torch.arange(500))  # (N,)
-    node_idx = node_idx.unsqueeze(0)    # (1, N)
-    print(node_idx.size)
+    model = FaST(716, 96, 720)
+    summary(model, [64, 96, 716, 3])
