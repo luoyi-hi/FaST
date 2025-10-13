@@ -135,7 +135,7 @@ Thank you for the constructive suggestion. We have added and reported the **$R^2
 <img src="src/model-batch.png" alt="Table 4 Results" style="width:40%;">
 </p>
 
-Table 2 presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
+Table 5 presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
 
 <p align="center"><b>Table&nbsp;5</b> Performance comparisons.</p>
 
