@@ -115,7 +115,7 @@ python main-master/experiments/evaluate.py -cfg  FaST/SD_96_672.py -ckpt Paramet
 ```
 ### 1.6 Experimental Results
 
-<!-- 实验结果补充，R2和结果有一致性，补充了12步，在不同数据集上模型的批次范围 -->
+Thank you for the constructive suggestion. We have added and reported the **$R^2$ (coefficient of determination)** metric on the **CA** dataset. This metric quantifies the **proportion of variance explained** by the model, with a range of $(-\infty, 1]$; values closer to 1 indicate a better fit/prediction, whereas negative values imply performance worse than a simple baseline (e.g., predicting the mean). Our method achieves the **best $R^2$** on the CA dataset, further demonstrating its effectiveness in this setting. Detailed results are provided in **Tables 2** and **3**. In addition, **Table 4** lists the **batch-size settings** used by different models across datasets to facilitate reproducibility and ensure a fair comparison. **We also include experiments for the 12-step-ahead forecasting setting**, which assess short-horizon performance; the corresponding results are incorporated into **Tables 2/3** and are consistent with our main findings.
 
 ![Table 3 Results](src/results2.png)
 
