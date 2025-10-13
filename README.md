@@ -121,9 +121,8 @@ python main-master/experiments/evaluate.py -cfg  FaST/SD_96_672.py -ckpt Paramet
 
 <p align="center"><b>Table&nbsp;4</b> Performance comparisons on CA (96=>192/672).</p>
 
-![Table 4 Results](src/results3.png)
 <p align="center">
-<img src="src/results3.png" alt="Table 3 Results" style="width:40%;">
+<img src="src/results3.png" alt="Table 3 Results" style="width:50%;">
 </p>
 
 
