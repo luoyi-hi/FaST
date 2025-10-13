@@ -34,13 +34,20 @@ In addition, **Table 3** lists the **batch-size** configurations used by differe
   "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.
 </p>
 
-
 ![Table 2 Results1](src/results2.png)
+
+
 
 <p align="center"><b>Table&nbsp;3</b> Batch size settings for all baselines.</p>
 
 <p align="center">
 <img src="src/model-batch.png" alt="Table 3 Results" style="width:40%;">
+</p>
+
+<p align="center"><b>Table&nbsp;4</b> Proportion of Samples with Spatial Similarity (Percentage of sample pairs with cosine similarity > 0.7 at the same timestamp). </p>
+
+<p align="center">
+<img src="src/percentage.png" alt="Table 4 Results" style="width:100%;">
 </p>
 
 ## 2. Experimental Details
@@ -76,10 +83,10 @@ Unzip the downloaded data into the `DataPipeline` directory. Then, use the follo
 bash DataPipeline.sh
 ```
 
-Dataset statistics are summarized in Table 4.
+Dataset statistics are summarized in Table 5.
 
 
-<p align="center"><b>Table&nbsp;4</b> Dataset statistics.</p>
+<p align="center"><b>Table&nbsp;5</b> Dataset statistics.</p>
 
 | Data | #nodes | Time interval | Time range           | Std    | Mean   | Features     | #Samples       |
 | ---- | ------ | ------------- | -------------------- | ------ | ------ | ------------ | -------------- |
@@ -152,12 +159,12 @@ python main-master/experiments/evaluate.py -cfg  FaST/SD_96_672.py -ckpt Paramet
 ### 2.6 Experimental Results
 
 <p align="center">
-<b>Table&nbsp;5</b> presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
+<b>Table&nbsp;6</b> presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
 </p>
 
-<p align="center"><b>Table&nbsp;5</b> Performance comparisons.</p>
+<p align="center"><b>Table&nbsp;6</b> Performance comparisons.</p>
 
-![Table 5 Results](src/results3.png)
+![Table 6 Results](src/results3.png)
 
 
 
