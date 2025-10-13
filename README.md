@@ -129,7 +129,7 @@ Thank you for the constructive suggestion. We have added and reported the **$R^2
 
 <p align="center"><b>Table&nbsp;4</b> Performance comparisons on Electricity (24=>12/24/48/168).</p>
 
-![Table 4 Results1](src/results1.png)
+![Table 4 Results1](src/results3.png)
 
 <p align="center"><b>Table&nbsp;5</b> Batch size across datasets for each models.</p>
 
