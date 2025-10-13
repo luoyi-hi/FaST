@@ -128,6 +128,9 @@ Table 2 presents the performance comparison of different models on time series f
 
 ![Table 4 Results](src/results3.png)
 
+<p align="center"><b>Table&nbsp;5</b> Batch size across datasets for each models.</p>
+
+![Table 4 Results](src/model-batch.png)
 
 ### 1.7 Baseline Reproduction
 
