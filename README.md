@@ -48,7 +48,7 @@ In addition, **Table 3** lists the **batch-size** configurations used by differe
 <p align="center"><b>Table&nbsp;4</b> Proportion of Samples with Spatial Similarity (Percentage of sample pairs with cosine similarity > 0.7 at the same timestamp). </p>
 
 <p align="center">
-<img src="src/percentage.png" alt="Table 4 Results" style="width:100%;">
+<img src="src/percentage.png" alt="Table 4 Results" style="width:60%;">
 </p>
 
 ## 2. Experimental Details
