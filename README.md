@@ -115,11 +115,11 @@ python main-master/experiments/evaluate.py -cfg  FaST/SD_96_672.py -ckpt Paramet
 ```
 ### 1.6 Experimental Results
 
-Thank you for the constructive suggestion. We have added and reported the **$R^2$ (coefficient of determination)** metric on the **CA** dataset. This metric quantifies the **proportion of variance explained** by the model, with a range of $(-\infty, 1]$; values closer to 1 indicate a better fit/prediction, whereas negative values imply performance worse than a simple baseline (e.g., predicting the mean). Our method achieves the **best $R^2$** on the CA dataset, further demonstrating its effectiveness in this setting. Detailed results are provided in **Tables 2** and **3**. **We also include experiments for the 12-step-ahead forecasting setting**, which assess short-horizon performance; the corresponding results are incorporated into **Tables 2/3** and are consistent with our main findings.
+Thank you for the constructive suggestion. We have added and reported the **$R^2$ (coefficient of determination)** metric on the **CA** dataset. $R^2$ measures the **proportion of variance explained** by the model, ranging over $(-\infty, 1]$; values closer to 1 indicate a better fit/prediction, whereas negative values indicate performance worse than a simple baseline (e.g., predicting the mean). On **CA**, our method attains the **best $R^2$**, corroborating its effectiveness. Detailed numbers appear in **Tables 2** and **3**. We also include the **12-step-ahead** setting to assess short-horizon performance; the corresponding results are incorporated into **Tables 2/3** and align with our main findings.
 
-Beyond the previous updates, we **add experiments on the Electricity dataset** covering **24⇒12/24/48/168** forecasting horizons to examine robustness and generalization across different look-ahead settings. The results are summarized in **Table 4** and remain consistent with our main findings on other datasets, further supporting the effectiveness of our method under varying horizons.
+Beyond that, we add experiments on the **Electricity** dataset spanning **24⇒12/24/48/168** horizons to evaluate robustness and generalization across look-ahead settings. The results are summarized in **Table 4** and remain consistent with those on other datasets.
 
-In addition, **Table 5** lists the **batch-size settings** used by different models across datasets to facilitate reproducibility and ensure a fair comparison. 
+In addition, **Table 5** lists the **batch-size** configurations used by different models across datasets to facilitate reproducibility and ensure a fair comparison.
 
 <p align="center"><b>Table&nbsp;2</b> Performance comparisons on CA (96=>12/48/96).</p>
 
@@ -131,7 +131,7 @@ In addition, **Table 5** lists the **batch-size settings** used by different mod
 <img src="src/results2.png" alt="Table 3 Results" style="width:80%;">
 </p>
 
-<p align="center"><b>Table&nbsp;4</b> Performance comparisons on Electricity (24=>12/24/48/168).</p>
+<p align="center"><b>Table&nbsp;4</b> Performance comparisons on Electricity (24=>12/24/48/168). Improvement is the percentage improvement of the best method over the second-best.</p>
 
 ![Table 4 Results1](src/results3.png)
 
