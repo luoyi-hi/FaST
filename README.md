@@ -131,7 +131,14 @@ In addition, **Table 5** lists the **batch-size** configurations used by differe
 <img src="src/results2.png" alt="Table 3 Results" style="width:80%;">
 </p>
 
-<p align="center"><b>Table&nbsp;4</b> Performance comparisons on Electricity (24=>12/24/48/168). Improvement is the percentage improvement of the best method over the second-best.</p>
+<p align="center">
+  <b>Table&nbsp;4</b> Performance comparisons on the Electricity dataset (24⇒12/24/48/168).
+  <b>Bold</b> indicates first place,
+  <u>underline</u> indicates second place.
+  The notation "24⇒12" denotes training on the past 24 time steps to predict the next 12 time steps.
+  "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.
+</p>
+
 
 ![Table 4 Results1](src/results3.png)
 
