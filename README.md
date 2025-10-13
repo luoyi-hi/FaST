@@ -150,7 +150,9 @@ In addition, **Table 5** lists the **batch-size** configurations used by differe
 <img src="src/model-batch.png" alt="Table 5 Results" style="width:40%;">
 </p>
 
-Table 6 presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
+<p align="center">
+<b>Table&nbsp;6</b> presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
+</p>
 
 <p align="center"><b>Table&nbsp;6</b> Performance comparisons.</p>
 
