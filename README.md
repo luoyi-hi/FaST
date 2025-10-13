@@ -12,7 +12,8 @@ Thank you for the constructive suggestion. We have added and reported the **$R^2
 
 Beyond that, we add experiments on the **Electricity** dataset spanning **24⇒12/24/48/168** horizons to evaluate robustness and generalization across look-ahead settings. The results are summarized in **Table 2** and remain consistent with those on other datasets.
 
-In addition, **Table 3** lists the **batch-size** configurations used by different models across datasets to facilitate reproducibility and ensure a fair comparison.
+In addition, **Table 3** lists the **batch-size** configurations used by different models across datasets to facilitate reproducibility and ensure a fair comparison. **Table 4** further reports the spatial similarity ratio across datasets (cosine similarity > 0.7 at the same timestamp), providing a concise reference for cross-node correlation.
+
 
 <p align="center">
   <b>Table&nbsp;1</b> Performance comparisons on the CA dataset (96⇒12/48/96/672).  
