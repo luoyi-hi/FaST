@@ -114,19 +114,18 @@ python main-master/experiments/evaluate.py -cfg  FaST/SD_96_192.py -ckpt Paramet
 python main-master/experiments/evaluate.py -cfg  FaST/SD_96_672.py -ckpt Parameters_FaST/SD/96_672/FaST_best_val_MAE.pt -g 0
 ```
 ### 1.6 Experimental Results
-Table 2 presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
 
-<p align="center"><b>Table&nbsp;2</b> Performance comparisons.</p>
-
-![Table 2 Results](src/results.png)
-
-<p align="center"><b>Table&nbsp;3</b> Performance comparisons on CA (96=>12/48/96).</p>
+实验结果补充，R2和结果有一致性，补充了12步，在不同数据集上模型的批次范围
 
 ![Table 3 Results](src/results2.png)
 
 <p align="center"><b>Table&nbsp;4</b> Performance comparisons on CA (96=>192/672).</p>
 
 ![Table 4 Results](src/results3.png)
+<p align="center">
+<img src="src/results3.png" alt="Table 3 Results" style="width:40%;">
+</p>
+
 
 <p align="center"><b>Table&nbsp;5</b> Batch size across datasets for each models.</p>
 
@@ -134,6 +133,14 @@ Table 2 presents the performance comparison of different models on time series f
 <p align="center">
 <img src="src/model-batch.png" alt="Table 4 Results" style="width:40%;">
 </p>
+
+Table 2 presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
+
+<p align="center"><b>Table&nbsp;2</b> Performance comparisons.</p>
+
+![Table 2 Results](src/results.png)
+
+
 
 ### 1.7 Baseline Reproduction
 
