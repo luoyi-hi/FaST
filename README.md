@@ -6,10 +6,46 @@ The architecture of FaST, as shown in Figure 1, comprises three components: 1) T
 
 <p align="center"><b>Figure&nbsp;1</b> Architecture of FaST.</p>
 
-## 1. Experimental Details
+## 1. Supplementary Experiment
 
-### 1.1 Experimental Setting
+Thank you for the constructive suggestion. We have added and reported the **$R^2$ (coefficient of determination)** metric on the **CA** dataset. $R^2$ measures the **proportion of variance explained** by the model, ranging over $(-\infty, 1]$; values closer to 1 indicate a better fit/prediction, whereas negative values indicate performance worse than a simple baseline (e.g., predicting the mean). On **CA**, our method attains the **best $R^2$**, corroborating its effectiveness. Detailed numbers appear in **Tables 1**. We also include the **12-step-ahead** setting to assess short-horizon performance; the corresponding results are incorporated into **Tables 1** and align with our main findings.
 
+Beyond that, we add experiments on the **Electricity** dataset spanning **24⇒12/24/48/168** horizons to evaluate robustness and generalization across look-ahead settings. The results are summarized in **Table 2** and remain consistent with those on other datasets.
+
+In addition, **Table 3** lists the **batch-size** configurations used by different models across datasets to facilitate reproducibility and ensure a fair comparison.
+
+<p align="center">
+  <b>Table&nbsp;1</b> Performance comparisons on the CA dataset (96⇒12/48/96/672).  
+  <b>Bold</b> indicates first place,  
+  <u>underline</u> indicates second place.  
+  The notation "96⇒12" denotes training on the past 96 time steps to predict the next 12 time steps.  
+  "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.  
+  "<b>OOM</b>" indicates out-of-memory errors.  
+</p>
+
+
+![Table 1 Results1](src/results1.png)
+
+<p align="center">
+  <b>Table&nbsp;2</b> Performance comparisons on the Electricity dataset (24⇒12/24/48/168).
+  <b>Bold</b> indicates first place,
+  <u>underline</u> indicates second place.
+  The notation "24⇒12" denotes training on the past 24 time steps to predict the next 12 time steps.
+  "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.
+</p>
+
+
+![Table 2 Results1](src/results2.png)
+
+<p align="center"><b>Table&nbsp;3</b> Batch size settings for all baselines.</p>
+
+<p align="center">
+<img src="src/model-batch.png" alt="Table 3 Results" style="width:40%;">
+</p>
+
+## 2. Experimental Details
+
+### 2.1 Experimental Setting
 
 
 The experimental evaluation is implemented using the `BasicTS` framework. The maximum number of training epochs for all methods is set to 50, with early stopping based on validation set performance to select the optimal model parameters. Performance is evaluated using MAE, RMSE, and MAPE metrics. All experiments are conducted on a system equipped with an AMD EPYC 7532 processor at 2.40 GHz, an NVIDIA RTX A6000 GPU with 48 GB of memory, 128 GB of RAM, and Ubuntu 20.04. The default deep learning library is PyTorch version 2.2.1, with Python version 3.11.8.
@@ -18,7 +54,7 @@ The FaST model employs the Adam optimizer with an initial learning rate of 0.002
 
 
 
-### 1.2 Dataset Description
+### 2.2 Dataset Description
 
 The CA dataset used in our report was collected from the Performance Measurement System (PeMS) by the authors of [1], and we obtained the data through that work. The San Diego (SD), Greater Los Angeles (GLA), and Greater Bay Area (GBA) areas are three representative subregions selected from the CA dataset, containing 716, 3834, and 2352 sensors, respectively. 
 
@@ -40,10 +76,10 @@ Unzip the downloaded data into the `DataPipeline` directory. Then, use the follo
 bash DataPipeline.sh
 ```
 
-Dataset statistics are summarized in Table 1.
+Dataset statistics are summarized in Table 4.
 
 
-<p align="center"><b>Table&nbsp;1</b> Dataset statistics.</p>
+<p align="center"><b>Table&nbsp;4</b> Dataset statistics.</p>
 
 | Data | #nodes | Time interval | Time range           | Std    | Mean   | Features     | #Samples       |
 | ---- | ------ | ------------- | -------------------- | ------ | ------ | ------------ | -------------- |
@@ -58,14 +94,14 @@ For more dataset details, refer to literature [1].
 
 [1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting. In The Annual Conference on Neural Information Processing Systems. New Orleans, LA, USA.
 
-### 1.3 Data Generation for Model Training
+### 2.3 Data Generation for Model Training
 
 
 We use the 2019 SD, GBA, GLA, and CA datasets. First, we obtain all samples through a sliding window, then split the samples into training, validation, and test sets in a 6:2:2 ratio.
 The generated data will be stored in the `main-master/datasets` directory. In each data directory, the `his.npz` file stores raw traffic flow values along with derived daily and weekly features. The `adj_mx.pkl` file contains the adjacency matrix for the data, and `desc.json` stores the data information. Other folders, such as `{input_len}_{output_len}`, store the sample indices for the training, validation, and test sets for the corresponding forecasting length.
 
 
-### 1.4 Training FaST Model
+### 2.4 Training FaST Model
 
 
 Run the following commands to train the FaST on different datasets and forecasting lengths:
@@ -96,7 +132,7 @@ python main-master/experiments/train_seed.py -c FaST/CA_96_192.py -g 0
 python main-master/experiments/train_seed.py -c FaST/CA_96_672.py -g 0
 ```
 
-### 1.5 FaST Model Reproduction: Reproducing FaST's experiment results using our trained parameters
+### 2.5 FaST Model Reproduction: Reproducing FaST's experiment results using our trained parameters
 
 Due to storage limitations in the anonymous repository, we only release trained parameters for the SD dataset. These parameters are sufficient to reproduce the core results reported in this paper.
 
@@ -113,44 +149,7 @@ python main-master/experiments/evaluate.py -cfg  FaST/SD_96_96.py -ckpt Paramete
 python main-master/experiments/evaluate.py -cfg  FaST/SD_96_192.py -ckpt Parameters_FaST/SD/96_192/FaST_best_val_MAE.pt -g 0
 python main-master/experiments/evaluate.py -cfg  FaST/SD_96_672.py -ckpt Parameters_FaST/SD/96_672/FaST_best_val_MAE.pt -g 0
 ```
-### 1.6 Experimental Results
-
-Thank you for the constructive suggestion. We have added and reported the **$R^2$ (coefficient of determination)** metric on the **CA** dataset. $R^2$ measures the **proportion of variance explained** by the model, ranging over $(-\infty, 1]$; values closer to 1 indicate a better fit/prediction, whereas negative values indicate performance worse than a simple baseline (e.g., predicting the mean). On **CA**, our method attains the **best $R^2$**, corroborating its effectiveness. Detailed numbers appear in **Tables 2**. We also include the **12-step-ahead** setting to assess short-horizon performance; the corresponding results are incorporated into **Tables 2** and align with our main findings.
-
-Beyond that, we add experiments on the **Electricity** dataset spanning **24⇒12/24/48/168** horizons to evaluate robustness and generalization across look-ahead settings. The results are summarized in **Table 3** and remain consistent with those on other datasets.
-
-In addition, **Table 4** lists the **batch-size** configurations used by different models across datasets to facilitate reproducibility and ensure a fair comparison.
-
-<p align="center">
-  <b>Table&nbsp;2</b> Performance comparisons on the CA dataset (96⇒12/48/96/672).  
-  <b>Bold</b> indicates first place,  
-  <u>underline</u> indicates second place.  
-  The notation "96⇒12" denotes training on the past 96 time steps to predict the next 12 time steps.  
-  "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.  
-  "<b>OOM</b>" indicates out-of-memory errors.  
-</p>
-
-
-![Table 2 Results1](src/results1.png)
-
-<p align="center">
-  <b>Table&nbsp;3</b> Performance comparisons on the Electricity dataset (24⇒12/24/48/168).
-  <b>Bold</b> indicates first place,
-  <u>underline</u> indicates second place.
-  The notation "24⇒12" denotes training on the past 24 time steps to predict the next 12 time steps.
-  "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.
-</p>
-
-
-![Table 3 Results1](src/results2.png)
-
-<p align="center"><b>Table&nbsp;4</b> Batch size across datasets for each models.</p>
-
-
-<!-- ![Table 4 Results](src/model-batch.png) -->
-<p align="center">
-<img src="src/model-batch.png" alt="Table 4 Results" style="width:40%;">
-</p>
+### 2.6 Experimental Results
 
 <p align="center">
 <b>Table&nbsp;5</b> presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
@@ -162,7 +161,7 @@ In addition, **Table 4** lists the **batch-size** configurations used by differe
 
 
 
-### 1.7 Baseline Reproduction
+### 2.7 Baseline Reproduction
 
 Use the following commands to reproduce baseline models:
 
