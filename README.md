@@ -119,16 +119,16 @@ Thank you for the constructive suggestion. We have added and reported the **$R^2
 
 <p align="center"><b>Table&nbsp;2</b> Performance comparisons on CA (96=>12/48/96).</p>
 
-![Table 2 Results](src/results2.png)
+![Table 2 Results1](src/results1.png)
 
-<p align="center"><b>Table&nbsp;2</b> Performance comparisons on CA (96=>192/672).</p>
+<p align="center"><b>Table&nbsp;3</b> Performance comparisons on CA (96=>192/672).</p>
 
 <p align="center">
-<img src="src/results3.png" alt="Table 3 Results" style="width:60%;">
+<img src="src/results2.png" alt="Table 3 Results" style="width:60%;">
 </p>
 
 
-<p align="center"><b>Table&nbsp;5</b> Batch size across datasets for each models.</p>
+<p align="center"><b>Table&nbsp;4</b> Batch size across datasets for each models.</p>
 
 <!-- ![Table 4 Results](src/model-batch.png) -->
 <p align="center">
@@ -137,9 +137,9 @@ Thank you for the constructive suggestion. We have added and reported the **$R^2
 
 Table 2 presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
 
-<p align="center"><b>Table&nbsp;2</b> Performance comparisons.</p>
+<p align="center"><b>Table&nbsp;5</b> Performance comparisons.</p>
 
-![Table 2 Results](src/results.png)
+![Table 5 Results](src/results3.png)
 
 
 
