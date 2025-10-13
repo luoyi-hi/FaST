@@ -115,7 +115,7 @@ python main-master/experiments/evaluate.py -cfg  FaST/SD_96_672.py -ckpt Paramet
 ```
 ### 1.6 Experimental Results
 
-实验结果补充，R2和结果有一致性，补充了12步，在不同数据集上模型的批次范围
+<!-- 实验结果补充，R2和结果有一致性，补充了12步，在不同数据集上模型的批次范围 -->
 
 ![Table 3 Results](src/results2.png)
 
