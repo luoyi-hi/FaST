@@ -124,7 +124,7 @@ Thank you for the constructive suggestion. We have added and reported the **$R^2
 <p align="center"><b>Table&nbsp;3</b> Performance comparisons on CA (96=>192/672).</p>
 
 <p align="center">
-<img src="src/results2.png" alt="Table 3 Results" style="width:70%;">
+<img src="src/results2.png" alt="Table 3 Results" style="width:80%;">
 </p>
 
 
