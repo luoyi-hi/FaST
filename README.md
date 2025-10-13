@@ -117,12 +117,14 @@ python main-master/experiments/evaluate.py -cfg  FaST/SD_96_672.py -ckpt Paramet
 
 Thank you for the constructive suggestion. We have added and reported the **$R^2$ (coefficient of determination)** metric on the **CA** dataset. This metric quantifies the **proportion of variance explained** by the model, with a range of $(-\infty, 1]$; values closer to 1 indicate a better fit/prediction, whereas negative values imply performance worse than a simple baseline (e.g., predicting the mean). Our method achieves the **best $R^2$** on the CA dataset, further demonstrating its effectiveness in this setting. Detailed results are provided in **Tables 2** and **3**. In addition, **Table 4** lists the **batch-size settings** used by different models across datasets to facilitate reproducibility and ensure a fair comparison. **We also include experiments for the 12-step-ahead forecasting setting**, which assess short-horizon performance; the corresponding results are incorporated into **Tables 2/3** and are consistent with our main findings.
 
-![Table 3 Results](src/results2.png)
+<p align="center"><b>Table&nbsp;2</b> Performance comparisons on CA (96=>12/48/96).</p>
 
-<p align="center"><b>Table&nbsp;4</b> Performance comparisons on CA (96=>192/672).</p>
+![Table 2 Results](src/results2.png)
+
+<p align="center"><b>Table&nbsp;2</b> Performance comparisons on CA (96=>192/672).</p>
 
 <p align="center">
-<img src="src/results3.png" alt="Table 3 Results" style="width:50%;">
+<img src="src/results3.png" alt="Table 3 Results" style="width:60%;">
 </p>
 
 
