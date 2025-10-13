@@ -121,11 +121,15 @@ Beyond that, we add experiments on the **Electricity** dataset spanning **24⇒1
 
 In addition, **Table 4** lists the **batch-size** configurations used by different models across datasets to facilitate reproducibility and ensure a fair comparison.
 
-<p align="center"><b>Table&nbsp;2</b> Performance comparisons on the CA dataset (96=>12/48/96/672).
-<b>Bold</b> indicates first place,
-  <u>underline</u> indicates second place.
-  The notation "96⇒12" denotes training on the past 96 time steps to predict the next 12 time steps.
-  "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.</p>
+<p align="center">
+  <b>Table&nbsp;2</b> Performance comparisons on the CA dataset (96⇒12/48/96/672).  
+  <b>Bold</b> indicates first place,  
+  <u>underline</u> indicates second place.  
+  The notation "96⇒12" denotes training on the past 96 time steps to predict the next 12 time steps.  
+  "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.  
+  "<b>OOM</b>" indicates out-of-memory errors.  
+</p>
+
 
 ![Table 2 Results1](src/results1.png)
 
