@@ -127,19 +127,22 @@ Thank you for the constructive suggestion. We have added and reported the **$R^2
 <img src="src/results2.png" alt="Table 3 Results" style="width:80%;">
 </p>
 
+<p align="center"><b>Table&nbsp;4</b> Performance comparisons on Electricity (24=>12/24/48/168).</p>
 
-<p align="center"><b>Table&nbsp;4</b> Batch size across datasets for each models.</p>
+![Table 4 Results1](src/results1.png)
+
+<p align="center"><b>Table&nbsp;5</b> Batch size across datasets for each models.</p>
 
 <!-- ![Table 4 Results](src/model-batch.png) -->
 <p align="center">
-<img src="src/model-batch.png" alt="Table 4 Results" style="width:40%;">
+<img src="src/model-batch.png" alt="Table 5 Results" style="width:40%;">
 </p>
 
-Table 5 presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
+Table 6 presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
 
-<p align="center"><b>Table&nbsp;5</b> Performance comparisons.</p>
+<p align="center"><b>Table&nbsp;6</b> Performance comparisons.</p>
 
-![Table 5 Results](src/results3.png)
+![Table 6 Results](src/results4.png)
 
 
 
