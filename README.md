@@ -121,9 +121,11 @@ Table 2 presents the performance comparison of different models on time series f
 ![Table 2 Results](src/results.png)
 
 <p align="center"><b>Table&nbsp;3</b> Performance comparisons on CA (96=>12/48/96).</p>
+
 ![Table 3 Results](src/results2.png)
 
 <p align="center"><b>Table&nbsp;4</b> Performance comparisons on CA (96=>192/672).</p>
+
 ![Table 4 Results](src/results3.png)
 
 
