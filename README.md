@@ -99,6 +99,7 @@ In addition, **Table 5** lists the **batch-size** configurations used by differe
 </p>
 
 **Reconstruction Error**
+
 Let:
 - \(H \in \mathbb{R}^{N\times D}\): node representations **before** the graph–agent attention layer;
 - \(A_{g2a} \in \mathbb{R}^{a\times N}\): Graph→Agent attention (row-wise softmax over \(N\));
