@@ -22,6 +22,10 @@ Dataset statistics are summarized in **Table 1**.
 
 For more dataset details, refer to literature [1].
 
+**Reference**
+
+[1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting. In The Annual Conference on Neural Information Processing Systems. New Orleans, LA, USA.
+
 Thank you for the constructive suggestion. We have added and reported the **$R^2$ (coefficient of determination)** metric on the **CA** dataset. $R^2$ measures the **proportion of variance explained** by the model, ranging over $(-\infty, 1]$; values closer to 1 indicate a better fit/prediction, whereas negative values indicate performance worse than a simple baseline (e.g., predicting the mean). On **CA**, our method attains the **best $R^2$**, corroborating its effectiveness. Detailed numbers appear in **Tables 2**. We also include the **12-step-ahead** setting to assess short-horizon performance; the corresponding results are incorporated into **Tables 2** and align with our main findings. **Figure 2** visualizes these performance comparisons, clearly illustrating our model's consistent superiority across all metrics and forecasting horizons. **Table 3** shows 96⇒12 forecasting results on SD, GBA, GLA, and CA.
 
 Beyond that, we add experiments on the **Electricity** dataset spanning **24⇒12/24/48/168** horizons to evaluate robustness and generalization across look-ahead settings. The results are summarized in **Table 4** and remain consistent with those on other datasets.  **Figure 3** visualizes these performance comparisons, clearly illustrating our model's consistent superiority across all metrics and forecasting horizons.
@@ -126,24 +130,6 @@ Unzip the downloaded data into the `DataPipeline` directory. Then, use the follo
 ```shell
 bash DataPipeline.sh
 ```
-
-Dataset statistics are summarized in Table 6.
-
-
-<p align="center"><b>Table&nbsp;6</b> Dataset statistics.</p>
-
-| Data | #nodes | Time interval | Time range           | Std    | Mean   | Features     | #Samples       |
-| ---- | ------ | ------------- | -------------------- | ------ | ------ | ------------ | -------------- |
-| SD   | 716    | 15 minute     | [1/1/2019, 1/1/2020) | 184.02 | 244.31 | traffic flow | 24.5M～25.0M   |
-| GBA  | 2,352  | 15 minute     | [1/1/2019, 1/1/2020) | 166.67 | 239.82 | traffic flow | 80.6M～82.1M   |
-| GLA  | 3,834  | 15 minute     | [1/1/2019, 1/1/2020) | 187.77 | 276.82 | traffic flow | 131.4M～133.8M |
-| CA   | 8,600  | 15 minute     | [1/1/2019, 1/1/2020) | 177.12 | 237.39 | traffic flow | 294.7M～300.1M |
-
-For more dataset details, refer to literature [1].
-
-**Reference**
-
-[1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting. In The Annual Conference on Neural Information Processing Systems. New Orleans, LA, USA.
 
 ### 2.3 Data Generation for Model Training
 
