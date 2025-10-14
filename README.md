@@ -14,12 +14,12 @@ The dataset statistics are summarized in **Table 1**.
 
 <p align="center"><b>Table&nbsp;1</b> Dataset statistics.</p>
 
-| Data | #nodes | Edges   | Degree | Max_value | Time interval | Time range           | Std    | Mean   | Features     | #Samples       | Similarity | Missing rate |
-| ---- | ------ | ------- | ------ | --------- | ------------- | -------------------- | ------ | ------ | ------------ | -------------- | ---------- | ------------ |
-| SD   | 716    | 17,319  | 24.2   | 999       | 15 minute     | [1/1/2019, 1/1/2020) | 184.02 | 244.31 | traffic flow | 24.5M～25.0M   | 48.36%     | 5.67%        |
-| GBA  | 2,352  | 61,246  | 26.0   | 998       | 15 minute     | [1/1/2019, 1/1/2020) | 166.67 | 239.82 | traffic flow | 80.6M～82.1M   | 41.62%     | 5.86%        |
-| GLA  | 3,834  | 98,703  | 25.7   | 999       | 15 minute     | [1/1/2019, 1/1/2020) | 187.77 | 276.82 | traffic flow | 131.4M～133.8M | 45.80%     | 5.72%        |
-| CA   | 8,600  | 201,363 | 23.4   | 999       | 15 minute     | [1/1/2019, 1/1/2020) | 177.12 | 237.39 | traffic flow | 294.7M～300.1M | 41.87%     | 5.99%        |
+| Data | #nodes | Edges   | Degree | Max_value | Time interval | Time range           | Std    | Mean   | Max_value | Features     | #Samples       | Similarity | Missing rate |
+| ---- | ------ | ------- | ------ | --------- | ------------- | -------------------- | ------ | ------ | --------- | ------------ | -------------- | ---------- | ------------ |
+| SD   | 716    | 17,319  | 24.2   | 999       | 15 minute     | [1/1/2019, 1/1/2020) | 184.02 | 244.31 | 999       | traffic flow | 24.5M～25.0M   | 48.36%     | 5.67%        |
+| GBA  | 2,352  | 61,246  | 26.0   | 998       | 15 minute     | [1/1/2019, 1/1/2020) | 166.67 | 239.82 | 998       | traffic flow | 80.6M～82.1M   | 41.62%     | 5.86%        |
+| GLA  | 3,834  | 98,703  | 25.7   | 999       | 15 minute     | [1/1/2019, 1/1/2020) | 187.77 | 276.82 | 999       | traffic flow | 131.4M～133.8M | 45.80%     | 5.72%        |
+| CA   | 8,600  | 201,363 | 23.4   | 999       | 15 minute     | [1/1/2019, 1/1/2020) | 177.12 | 237.39 | 999       | traffic flow | 294.7M～300.1M | 41.87%     | 5.99%        |
 
 > For more dataset details, refer to [1].
 
