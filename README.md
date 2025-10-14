@@ -98,6 +98,24 @@ In addition, **Table 5** lists the **batch-size** configurations used by differe
 <img src="src/percentage.png" alt="Table 6" style="width:60%;">
 </p>
 
+**Reconstruction Error**
+Let:
+- \(H \in \mathbb{R}^{N\times D}\): node representations **before** the graph–agent attention layer;
+- \(A_{g2a} \in \mathbb{R}^{a\times N}\): Graph→Agent attention (row-wise softmax over \(N\));
+- \(A_{a2g} \in \mathbb{R}^{N\times a}\): Agent→Graph attention (row-wise softmax over \(a\)).
+
+Construct the projection matrix:
+\[
+P = A_{a2g}\,A_{g2a} \in \mathbb{R}^{N\times N}.
+\]
+
+The overall **Reconstruction Error** is defined as:
+\[
+\mathrm{RE} \;=\; \frac{\lVert H - P H \rVert_F}{\lVert H \rVert_F},
+\]
+where \(\lVert \cdot \rVert_F\) denotes the Frobenius norm.
+
+
 ## 2. Experimental Details
 
 ### 2.1 Experimental Setting
