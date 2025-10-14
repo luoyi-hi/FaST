@@ -106,14 +106,18 @@ Let:
 - $A_{a2g} \in \mathbb{R}^{N\times a}$: Agent→Graph attention (row-wise softmax over $a$).
 
 Construct the projection matrix:
-$$
+
+$
 P = A_{a2g}\,A_{g2a} \in \mathbb{R}^{N\times N}.
-$$
+$
+
 
 The overall **reconstruction error** is defined as:
-$$
+
+$
 \mathrm{RE} = \frac{\lVert H - P H \rVert_F}{\lVert H \rVert_F},
-$$
+$
+
 where $\lVert \cdot \rVert_F$ denotes the Frobenius norm.
 
 
