@@ -32,7 +32,7 @@ We use cosine similarity to measure the similarity between the standardized time
 
 $\text{Similarity}(\mathbf{A}, \mathbf{B}) = \cos(\theta) = \frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\| \|\mathbf{B}\|} = \frac{\sum_{i=1}^{L} A_i B_i}{\sqrt{\sum_{i=1}^{L} A_i^2} \sqrt{\sum_{i=1}^{L} B_i^2}}$
 
-This formula computes the cosine of the angle between the two vectors in the $L$-dimensional space, and the result ranges from $[-1, 1]$.
+This formula computes the cosine of the angle between the two vectors in the $L$-dimensional space, and the result ranges from [-1, 1].
 
 This metric is used to measure the prevalence of strongly similar node pairs across the dataset:
 
