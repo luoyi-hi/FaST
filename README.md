@@ -22,6 +22,38 @@ Dataset statistics are summarized in **Table 1**.
 
 For more dataset details, refer to literature [1].
 
+To eliminate the dimensional differences among time series from different nodes, we perform Z-Score normalization on each time series sample $x$ of length `L` (i.e., `INPUT_LEN + OUTPUT_LEN`), resulting in a standardized sequence $x'$:
+
+$x' = \frac{x - \mu}{\sigma}$$
+
+where $\mu$ and $\sigma$ denote the mean and standard deviation of the original time series vector $x$, respectively.
+
+We use cosine similarity to measure the similarity between the standardized time series vectors $\mathbf{A}$ and $\mathbf{B}$ of any two nodes:
+
+$\text{Similarity}(\mathbf{A}, \mathbf{B}) = \cos(\theta) = \frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\| \|\mathbf{B}\|} = \frac{\sum_{i=1}^{L} A_i B_i}{\sqrt{\sum_{i=1}^{L} A_i^2} \sqrt{\sum_{i=1}^{L} B_i^2}}$
+
+This formula computes the cosine of the angle between the two vectors in the $L$-dimensional space, and the result ranges from $[-1, 1]$.
+
+This metric is used to measure the prevalence of strongly similar node pairs across the dataset:
+
+$\text{Ratio} = \frac{N_{\text{highly\_similar}}}{N_{\text{total\_possible}}}$
+
+Where:
+
+- $N_{\text{highly\_similar}}$ is the total number of unique node pairs $(i, j)$ in all $M$ samples whose similarity score $S_{ij}$ exceeds a threshold $\tau$:
+
+$N_{\text{highly\_similar}} = \sum_{k=1}^{M} \sum_{i=1}^{N-1} \sum_{j=i+1}^{N} \mathbb{I}(S^{(k)}_{ij} > \tau)$
+
+  - $S^{(k)}_{ij}$ denotes the similarity between node $i$ and node $j$ in the $k$-th sample.  
+  - $N$ is the total number of nodes.  
+  - $\mathbb{I}(\cdot)$ is the indicator function, which returns 1 if the condition is true, otherwise 0.
+
+- $N_{\text{total\_possible}}$ is the total number of theoretically possible unique node pairs across all samples:
+
+$N_{\text{total\_possible}} = M \times \binom{N}{2} = M \times \frac{N(N-1)}{2}$
+
+In this study, we set the similarity threshold $\tau$ to 0.7. When the cosine similarity between two nodes exceeds this value, they are considered highly similar.
+
 **Reference**
 
 [1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting. In The Annual Conference on Neural Information Processing Systems. New Orleans, LA, USA.
