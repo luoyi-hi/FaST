@@ -100,7 +100,8 @@ In addition, **Table 5** lists the **batch-size** configurations used by differe
 
 **Reconstruction Error**
 
-Let:
+Regarding the reconstruction error, it is computed as follows:
+
 - $H_{t} \in \mathbb{R}^{N\times D}$: node representations **before** the graph–agent attention layer.
 - $A_{g2a} \in \mathbb{R}^{a\times N}$: Graph→Agent attention (row-wise softmax over $N$).
 - $A_{a2g} \in \mathbb{R}^{N\times a}$: Agent→Graph attention (row-wise softmax over $a$).
@@ -116,6 +117,13 @@ $\mathrm{\varepsilon} = \frac{\lVert H_{t} - P H_{t} \rVert_F}{\lVert H_{t} \rVe
 
 where $\lVert \cdot \rVert_F$ denotes the Frobenius norm.
 
+**Table 7** shows how the normalized reconstruction error changes as **#agents** increases from {16, 32, 64, 128}.
+
+<p align="center"><b>Table&nbsp;7</b> Reconstruction Error. </p>
+
+<p align="center">
+<img src="src/Reconstruction Error.png" alt="Table 7" style="width:60%;">
+</p>
 
 ## 2. Experimental Details
 
@@ -208,12 +216,12 @@ python main-master/experiments/evaluate.py -cfg  FaST/SD_96_672.py -ckpt Paramet
 ### 2.6 Experimental Results
 
 <p align="center">
-<b>Table&nbsp;7</b> presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
+<b>Table&nbsp;8</b> presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
 </p>
 
 <p align="center"><b>Table&nbsp;7</b> Performance comparisons.</p>
 
-![Table 7 Results](src/results3.png)
+![Table 8](src/results3.png)
 
 
 
