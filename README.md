@@ -24,7 +24,7 @@ For more dataset details, refer to literature [1].
 
 To eliminate the dimensional differences among time series from different nodes, we perform Z-Score normalization on each time series sample $x$ of length `L` (i.e., `INPUT_LEN + OUTPUT_LEN`), resulting in a standardized sequence $x'$:
 
-$x' = \frac{x - \mu}{\sigma}$$
+$x' = \frac{x - \mu}{\sigma}$
 
 where $\mu$ and $\sigma$ denote the mean and standard deviation of the original time series vector $x$, respectively.
 
@@ -40,15 +40,15 @@ $\text{Ratio} = \frac{N_{\text{highly\_similar}}}{N_{\text{total\_possible}}}$
 
 Where:
 
-- $N_{\text{highly\_similar}}$ is the total number of unique node pairs $(i, j)$ in all $M$ samples whose similarity score $S_{ij}$ exceeds a threshold $\tau$:
+$N_{\text{highly\_similar}}$ is the total number of unique node pairs $(i, j)$ in all $M$ samples whose similarity score $S_{ij}$ exceeds a threshold $\tau$:
 
 $N_{\text{highly\_similar}} = \sum_{k=1}^{M} \sum_{i=1}^{N-1} \sum_{j=i+1}^{N} \mathbb{I}(S^{(k)}_{ij} > \tau)$
 
-  - $S^{(k)}_{ij}$ denotes the similarity between node $i$ and node $j$ in the $k$-th sample.  
-  - $N$ is the total number of nodes.  
-  - $\mathbb{I}(\cdot)$ is the indicator function, which returns 1 if the condition is true, otherwise 0.
+  $S^{(k)}_{ij}$ denotes the similarity between node $i$ and node $j$ in the $k$-th sample.  
+  $N$ is the total number of nodes.  
+  $\mathbb{I}(\cdot)$ is the indicator function, which returns 1 if the condition is true, otherwise 0.
 
-- $N_{\text{total\_possible}}$ is the total number of theoretically possible unique node pairs across all samples:
+$N_{\text{total\_possible}}$ is the total number of theoretically possible unique node pairs across all samples:
 
 $N_{\text{total\_possible}} = M \times \binom{N}{2} = M \times \frac{N(N-1)}{2}$
 
