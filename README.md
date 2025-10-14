@@ -10,7 +10,7 @@ The architecture of FaST, as shown in Figure 1, comprises three components: 1) T
 
 Thank you for the constructive suggestion. We have added and reported the **$R^2$ (coefficient of determination)** metric on the **CA** dataset. $R^2$ measures the **proportion of variance explained** by the model, ranging over $(-\infty, 1]$; values closer to 1 indicate a better fit/prediction, whereas negative values indicate performance worse than a simple baseline (e.g., predicting the mean). On **CA**, our method attains the **best $R^2$**, corroborating its effectiveness. Detailed numbers appear in **Tables 1**. We also include the **12-step-ahead** setting to assess short-horizon performance; the corresponding results are incorporated into **Tables 1** and align with our main findings. **Figure 2** visualizes these performance comparisons, clearly illustrating our model's consistent superiority across all metrics and forecasting horizons.
 
-Beyond that, we add experiments on the **Electricity** dataset spanning **24⇒12/24/48/168** horizons to evaluate robustness and generalization across look-ahead settings. The results are summarized in **Table 2** and remain consistent with those on other datasets. 
+Beyond that, we add experiments on the **Electricity** dataset spanning **24⇒12/24/48/168** horizons to evaluate robustness and generalization across look-ahead settings. The results are summarized in **Table 2** and remain consistent with those on other datasets.  **Figure 3** visualizes these performance comparisons, clearly illustrating our model's consistent superiority across all metrics and forecasting horizons.
 
 In addition, **Table 3** lists the **batch-size** configurations used by different models across datasets to facilitate reproducibility and ensure a fair comparison. **Table 4** further reports the spatial similarity ratio across datasets (cosine similarity > 0.7 at the same timestamp), providing a concise reference for cross-node correlation.
 
@@ -44,6 +44,14 @@ In addition, **Table 3** lists the **batch-size** configurations used by differe
 </p>
 
 ![Table 2 Results1](src/results2.png)
+
+<p align="center">
+  <img src="src\Electricity_performance_MAE.png" alt="MAE Performance" width="24%">
+  <img src="src\Electricity_performance_RMSE.png" alt="RMSE Performance" width="24%">
+  <img src="src\Electricity_performance_MAPE.png" alt="MAPE Performance" width="24%">
+  <img src="src\Electricity_performance_R2.png" alt="R² Performance" width="24%">
+</p>
+<p align="center"><b>Figure&nbsp;3</b> Performance Evaluation of Models across Different Forecasting Horizons on the Electricity Dataset.</p>
 
 
 <p align="center"><b>Table&nbsp;3</b> Batch size settings for all baselines.</p>
