@@ -35,11 +35,9 @@ $\text{Similarity}(\mathbf{A}, \mathbf{B}) = \cos(\theta) = \frac{\mathbf{A} \cd
 This formula computes the cosine of the angle between the two vectors in the $L$-dimensional space, and the result ranges from $[-1, 1]$.
 
 This metric is used to measure the prevalence of strongly similar node pairs across the dataset:
-
 $\text{Ratio} = \frac{N_{\text{highly\_similar}}}{N_{\text{total\_possible}}}$
 
 Where:
-
 $N_{\text{highly\_similar}}$ is the total number of unique node pairs $(i, j)$ in all $M$ samples whose similarity score $S_{ij}$ exceeds a threshold $\tau$:
 
 $N_{\text{highly\_similar}} = \sum_{k=1}^{M} \sum_{i=1}^{N-1} \sum_{j=i+1}^{N} \mathbb{I}(S^{(k)}_{ij} > \tau)$
