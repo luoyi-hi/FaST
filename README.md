@@ -8,8 +8,9 @@ The architecture of FaST, as shown in Figure 1, comprises three components: 1) T
 
 ## 1. Supplementary Experiment
 
-Dataset statistics are summarized in **Table 1**.
+### 1.1 Dataset Statistics
 
+The dataset statistics are summarized in **Table 1**.
 
 <p align="center"><b>Table&nbsp;1</b> Dataset statistics.</p>
 
@@ -20,101 +21,93 @@ Dataset statistics are summarized in **Table 1**.
 | GLA  | 3,834  | 15 minute     | [1/1/2019, 1/1/2020) | 187.77 | 276.82 | traffic flow | 131.4M～133.8M | 45.80%     | 5.72%        |
 | CA   | 8,600  | 15 minute     | [1/1/2019, 1/1/2020) | 177.12 | 237.39 | traffic flow | 294.7M～300.1M | 41.87%     | 5.99%        |
 
-For more dataset details, refer to literature [1].
+> For more dataset details, refer to [1].
 
-To eliminate the dimensional differences among time series from different nodes, we perform Z-Score normalization on each time series sample $x$ of length `L` (i.e., `INPUT_LEN + OUTPUT_LEN`), resulting in a standardized sequence $x'$:
+---
 
-$x' = \frac{x - \mu}{\sigma}$
+### 1.2 Data Normalization and Similarity Metric
 
-where $\mu$ and $\sigma$ denote the mean and standard deviation of the original time series vector $x$, respectively.
+To eliminate dimensional differences among node-wise time series, we apply **Z-Score normalization** for each sequence $x$ of length `L`:
 
-We use cosine similarity to measure the similarity between the standardized time series vectors $\mathbf{A}$ and $\mathbf{B}$ of any two nodes:
+$$x' = \frac{x - \mu}{\sigma}$$
 
-$\text{Similarity}(\mathbf{A}, \mathbf{B}) = \cos(\theta) = \frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\| \|\mathbf{B}\|} = \frac{\sum_{i=1}^{L} A_i B_i}{\sqrt{\sum_{i=1}^{L} A_i^2} \sqrt{\sum_{i=1}^{L} B_i^2}}$
+where $\mu$ and $\sigma$ are the mean and standard deviation of the sequence $x$.
 
-This formula computes the cosine of the angle between the two vectors in the $L$-dimensional space, and the result ranges from [-1, 1].
+To measure similarity between two normalized sequences $\mathbf{A}$ and $\mathbf{B}$, we use cosine similarity:
 
-This metric is used to measure the prevalence of strongly similar node pairs across the dataset:
+$$\text{Similarity}(\mathbf{A}, \mathbf{B}) = \frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\| \|\mathbf{B}\|} = \frac{\sum_{i=1}^{L} A_i B_i}{\sqrt{\sum_{i=1}^{L} A_i^2} \sqrt{\sum_{i=1}^{L} B_i^2}}$$
 
-$\text{Ratio} = \frac{N_{\mathrm{highly\_similar}}}{N_{\mathrm{total\_possible}}}$
+This metric is then used to evaluate the proportion of highly similar node pairs (cosine similarity > $\tau = 0.7$):
+
+$$\text{Ratio} = \frac{N_{\mathrm{highly\_similar}}}{N_{\mathrm{total\_possible}}}$$
 
 Where:
 
-- $N_{\mathrm{highly\_similar}}$ is the total number of unique node pairs $(i, j)$ in all $M$ samples whose similarity score $S_{ij}$ exceeds a threshold $\tau$:
+- $N_{\mathrm{highly\_similar}} = \sum_{k=1}^{M} \sum_{i=1}^{N-1} \sum_{j=i+1}^{N} \mathbb{I}(S^{(k)}_{ij} > \tau)$  
+- $N_{\mathrm{total\_possible}} = M \times \binom{N}{2} = M \times \frac{N(N-1)}{2}$  
 
-$N_{\mathrm{highly\_similar}} = \sum_{k=1}^{M} \sum_{i=1}^{N-1} \sum_{j=i+1}^{N} \mathbb{I}(S^{(k)}_{ij} > \tau)$
+---
 
-  - $S^{(k)}_{ij}$ denotes the similarity between node $i$ and node $j$ in the $k$-th sample.  
-  - $N$ is the total number of nodes.  
-  - $\mathbb{I}(\cdot)$ is the indicator function, which returns 1 if the condition is true, otherwise 0.
+### 1.3 Main Results on CA Dataset
 
-- $N_{\mathrm{total\_possible}}$ is the total number of theoretically possible unique node pairs across all samples:
+We report the **$R^2$ (coefficient of determination)** metric on the **CA** dataset, which measures the **proportion of variance explained** by the model. Higher values (closer to 1) indicate better predictive performance.
 
-$N_{\mathrm{total\_possible}} = M \times \binom{N}{2} = M \times \frac{N(N-1)}{2}$
-
-In this study, we set the similarity threshold $\tau$ to 0.7. When the cosine similarity between two nodes exceeds this value, they are considered highly similar.
-
-**Reference**
-
-[1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting. In The Annual Conference on Neural Information Processing Systems. New Orleans, LA, USA.
-
-Thank you for the constructive suggestion. We have added and reported the **$R^2$ (coefficient of determination)** metric on the **CA** dataset. $R^2$ measures the **proportion of variance explained** by the model, ranging over $(-\infty, 1]$; values closer to 1 indicate a better fit/prediction, whereas negative values indicate performance worse than a simple baseline (e.g., predicting the mean). On **CA**, our method attains the **best $R^2$**, corroborating its effectiveness. Detailed numbers appear in **Tables 2**. We also include the **12-step-ahead** setting to assess short-horizon performance; the corresponding results are incorporated into **Tables 2** and align with our main findings. **Figure 2** visualizes these performance comparisons, clearly illustrating our model's consistent superiority across all metrics and forecasting horizons. **Table 3** shows 96⇒12 forecasting results on SD, GBA, GLA, and CA.
-
-Beyond that, we add experiments on the **Electricity** dataset spanning **24⇒12/24/48/168** horizons to evaluate robustness and generalization across look-ahead settings. The results are summarized in **Table 4** and remain consistent with those on other datasets.  **Figure 3** visualizes these performance comparisons, clearly illustrating our model's consistent superiority across all metrics and forecasting horizons.
-
-In addition, **Table 5** lists the **batch-size** configurations used by different models across datasets to facilitate reproducibility and ensure a fair comparison. **Table 6** further reports the spatial similarity ratio across datasets (cosine similarity > 0.7 at the same timestamp), providing a concise reference for cross-node correlation.
-
+**Table 2** and **Figure 2** summarize the results on CA dataset under 96⇒{12, 48, 96, 672} forecasting horizons.
 
 <p align="center">
   <b>Table&nbsp;2</b> Performance comparisons on the CA dataset (96⇒12/48/96/672).  
   <b>Bold</b> indicates first place,  
   <u>underline</u> indicates second place.  
-  The notation "96⇒12" denotes training on the past 96 time steps to predict the next 12 time steps.  
-  "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.  
-  "<b>OOM</b>" indicates out-of-memory errors.  
+  "<b>OOM</b>" denotes out-of-memory errors.  
 </p>
-
 
 ![Table 2](src/results1.png)
 
 <p align="center">
-  <img src="src\CA_performance_MAE.png" alt="MAE Performance" width="24%">
-  <img src="src\CA_performance_RMSE.png" alt="RMSE Performance" width="24%">
-  <img src="src\CA_performance_MAPE.png" alt="MAPE Performance" width="24%">
-  <img src="src\CA_performance_R2.png" alt="R² Performance" width="24%">
+  <img src="src/CA_performance_MAE.png" width="24%">
+  <img src="src/CA_performance_RMSE.png" width="24%">
+  <img src="src/CA_performance_MAPE.png" width="24%">
+  <img src="src/CA_performance_R2.png" width="24%">
 </p>
-<p align="center"><b>Figure&nbsp;2</b> Performance Evaluation of Models across Different Forecasting Horizons on the CA Dataset.</p>
+<p align="center"><b>Figure&nbsp;2</b> CA dataset results across forecasting horizons.</p>
+
+---
+
+### 1.4 Short-term Forecasting on Four Datasets
+
+To evaluate short-horizon forecasting, we report 96⇒12 results on SD, GBA, GLA, and CA in **Table 3**.
 
 <p align="center">
-  <b>Table&nbsp;3</b> Short-term forecasting comparisons on the SD, GBA, GLA, and CA datasets (96⇒12).  
-  <b>Bold</b> indicates first place,  
-  <u>underline</u> indicates second place.  
-  The notation "96⇒12" denotes training on the past 96 time steps to predict the next 12 time steps.  
-  "<b>OOM</b>" indicates out-of-memory errors due to resource limitations.  
+  <b>Table&nbsp;3</b> Short-term forecasting comparisons on SD, GBA, GLA, and CA datasets (96⇒12).  
+  "<b>OOM</b>" denotes out-of-memory errors.  
 </p>
 
 ![Table 3](src/Short_term_forecasting.png)
 
-<p align="center">
-  <b>Table&nbsp;4</b> Performance comparisons on the Electricity dataset (24⇒12/24/48/168).  
-  <b>Bold</b> indicates first place,  
-  <u>underline</u> indicates second place.  
-  The notation "24⇒12" denotes training on the past 24 time steps to predict the next 12 time steps.  
-  "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.  
-  <br><i>Note:</i> Several baseline methods are not yet included due to the complexity of their data pipelines, and will be added in future updates.
-</p>
+---
 
+### 1.5 Generalization on Electricity Dataset
+
+To assess generalization, we further evaluate on **Electricity dataset** with horizons of 24⇒{12,24,48,168}:
+
+<p align="center">
+  <b>Table&nbsp;4</b> Performance comparisons on the Electricity dataset.  
+  Several baselines will be added later due to data pipeline complexity.  
+</p>
 
 ![Table 4](src/results2.png)
 
 <p align="center">
-  <img src="src\Electricity_performance_MAE.png" alt="MAE Performance" width="24%">
-  <img src="src\Electricity_performance_RMSE.png" alt="RMSE Performance" width="24%">
-  <img src="src\Electricity_performance_MAPE.png" alt="MAPE Performance" width="24%">
-  <img src="src\Electricity_performance_R2.png" alt="R² Performance" width="24%">
+  <img src="src/Electricity_performance_MAE.png" width="24%">
+  <img src="src/Electricity_performance_RMSE.png" width="24%">
+  <img src="src/Electricity_performance_MAPE.png" width="24%">
+  <img src="src/Electricity_performance_R2.png" width="24%">
 </p>
-<p align="center"><b>Figure&nbsp;3</b> Performance Evaluation of Models across Different Forecasting Horizons on the Electricity Dataset.</p>
+<p align="center"><b>Figure&nbsp;3</b> Electricity dataset results across forecasting horizons.</p>
 
+---
+
+### 1.6 Reproducibility Settings
 
 <p align="center"><b>Table&nbsp;5</b> Batch size settings for all baselines.</p>
 
@@ -122,40 +115,47 @@ In addition, **Table 5** lists the **batch-size** configurations used by differe
 <img src="src/model-batch.png" alt="Table 5" style="width:40%;">
 </p>
 
+---
 
+### 1.7 Spatial Similarity Statistics
 
-<p align="center"><b>Table&nbsp;6</b> Proportion of Samples with Spatial Similarity (Percentage of sample pairs with cosine similarity > 0.7 at the same timestamp). </p>
+<p align="center"><b>Table&nbsp;6</b> Spatial Similarity Ratio (cosine similarity > 0.7).</p>
 
 <p align="center">
 <img src="src/percentage.png" alt="Table 6" style="width:60%;">
 </p>
 
-**Reconstruction Error**
+---
 
-Regarding the reconstruction error, it is computed as follows:
+### 1.8 Reconstruction Error Analysis
 
-- $H_{t} \in \mathbb{R}^{N\times D}$: node representations **before** the graph–agent attention layer.
-- $A_{g2a} \in \mathbb{R}^{a\times N}$: Graph→Agent attention.
-- $A_{a2g} \in \mathbb{R}^{N\times a}$: Agent→Graph attention.
+The **reconstruction error** evaluates how well the agent representations reconstruct the original node features.
 
-Construct the projection matrix:
+Let:
+- $H_t \in \mathbb{R}^{N \times D}$ be the node features before agent attention
+- $A_{g2a} \in \mathbb{R}^{a \times N}$ be Graph→Agent attention
+- $A_{a2g} \in \mathbb{R}^{N \times a}$ be Agent→Graph attention
 
-$P = A_{a2g}\,A_{g2a} \in \mathbb{R}^{N\times N}.$
+Define the projection matrix:
 
+$$P = A_{a2g} \cdot A_{g2a} \in \mathbb{R}^{N \times N}$$
 
-The overall **reconstruction error** is defined as:
+The normalized reconstruction error is:
 
-$\mathrm{\varepsilon} = \frac{\lVert H_{t} - P H_{t} \rVert_F}{\lVert H_{t} \rVert_F},$
+$$\varepsilon = \frac{\lVert H_t - P H_t \rVert_F}{\lVert H_t \rVert_F}$$
 
-where $\lVert \cdot \rVert_F$ denotes the Frobenius norm.
-
-**Table 7** shows how the normalized reconstruction error changes as **#agents** increases from {16, 32, 64, 128}.
-
-<p align="center"><b>Table&nbsp;7</b> Reconstruction Error. </p>
+<p align="center"><b>Table&nbsp;7</b> Reconstruction Error under different #agents.</p>
 
 <p align="center">
 <img src="src/Reconstruction Error.png" alt="Table 7" style="width:60%;">
 </p>
+
+---
+
+### Reference
+
+[1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. *LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting*. In NeurIPS 2023.
+
 
 ## 2. Experimental Details
 
