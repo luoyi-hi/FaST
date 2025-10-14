@@ -36,13 +36,14 @@ In addition, **Table 3** lists the **batch-size** configurations used by differe
 <p align="center"><b>Figure&nbsp;2</b> Performance Evaluation of Models across Different Forecasting Horizons on the CA Dataset.</p>
 
 <p align="center">
-  <b>Table&nbsp;2</b> Performance comparisons on the Electricity dataset (24⇒12/24/48/168).
-  <b>Bold</b> indicates first place,
-  <u>underline</u> indicates second place.
-  The notation "24⇒12" denotes training on the past 24 time steps to predict the next 12 time steps.
-  "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.
-  Results for several baselines requiring complex data pipelines will be reported subsequently.
+  <b>Table&nbsp;2</b> Performance comparisons on the Electricity dataset (24⇒12/24/48/168).  
+  <b>Bold</b> indicates first place,  
+  <u>underline</u> indicates second place.  
+  The notation "24⇒12" denotes training on the past 24 time steps to predict the next 12 time steps.  
+  "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.  
+  <br><i>Note:</i> Several baseline methods are not yet included due to the complexity of their data pipelines, and will be added in future updates.
 </p>
+
 
 ![Table 2 Results1](src/results2.png)
 
