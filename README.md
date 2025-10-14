@@ -103,8 +103,8 @@ In addition, **Table 5** lists the **batch-size** configurations used by differe
 Regarding the reconstruction error, it is computed as follows:
 
 - $H_{t} \in \mathbb{R}^{N\times D}$: node representations **before** the graph–agent attention layer.
-- $A_{g2a} \in \mathbb{R}^{a\times N}$: Graph→Agent attention (row-wise softmax over $N$).
-- $A_{a2g} \in \mathbb{R}^{N\times a}$: Agent→Graph attention (row-wise softmax over $a$).
+- $A_{g2a} \in \mathbb{R}^{a\times N}$: Graph→Agent attention.
+- $A_{a2g} \in \mathbb{R}^{N\times a}$: Agent→Graph attention.
 
 Construct the projection matrix:
 
