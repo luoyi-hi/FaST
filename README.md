@@ -36,22 +36,21 @@ This formula computes the cosine of the angle between the two vectors in the $L$
 
 This metric is used to measure the prevalence of strongly similar node pairs across the dataset:
 
-$\text{Ratio} = \frac{N_{\text{highly\_similar}}}{N_{\text{total\_possible}}}$
+$\text{Ratio} = \frac{N_{\mathrm{highly\_similar}}}{N_{\mathrm{total\_possible}}}$
 
 Where:
 
-- $N_{\text{highly\_similar}}$ is the total number of unique node pairs $(i, j)$ in all $M$ samples whose similarity score $S_{ij}$ exceeds a threshold $\tau$:
+- $N_{\mathrm{highly\_similar}}$ is the total number of unique node pairs $(i, j)$ in all $M$ samples whose similarity score $S_{ij}$ exceeds a threshold $\tau$:
 
-$N_{\text{highly\_similar}} = \sum_{k=1}^{M} \sum_{i=1}^{N-1} \sum_{j=i+1}^{N} \mathbb{I}(S^{(k)}_{ij} > \tau)$
+$N_{\mathrm{highly\_similar}} = \sum_{k=1}^{M} \sum_{i=1}^{N-1} \sum_{j=i+1}^{N} \mathbb{I}(S^{(k)}_{ij} > \tau)$
 
   - $S^{(k)}_{ij}$ denotes the similarity between node $i$ and node $j$ in the $k$-th sample.  
   - $N$ is the total number of nodes.  
   - $\mathbb{I}(\cdot)$ is the indicator function, which returns 1 if the condition is true, otherwise 0.
 
-- $N_{\text{total\_possible}}$ is the total number of theoretically possible unique node pairs across all samples:
+- $N_{\mathrm{total\_possible}}$ is the total number of theoretically possible unique node pairs across all samples:
 
-$N_{\text{total\_possible}} = M \times \binom{N}{2} = M \times \frac{N(N-1)}{2}
-$$
+$N_{\mathrm{total\_possible}} = M \times \binom{N}{2} = M \times \frac{N(N-1)}{2}$
 
 In this study, we set the similarity threshold $\tau$ to 0.7. When the cosine similarity between two nodes exceeds this value, they are considered highly similar.
 
