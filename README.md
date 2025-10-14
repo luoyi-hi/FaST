@@ -41,6 +41,7 @@ In addition, **Table 3** lists the **batch-size** configurations used by differe
   <u>underline</u> indicates second place.
   The notation "24⇒12" denotes training on the past 24 time steps to predict the next 12 time steps.
   "<i>Improv.</i>" is the percentage improvement of the FaST model over the best baseline.
+  Results for several baselines requiring complex data pipelines will be reported subsequently.
 </p>
 
 ![Table 2 Results1](src/results2.png)
