@@ -8,15 +8,29 @@ The architecture of FaST, as shown in Figure 1, comprises three components: 1) T
 
 ## 1. Supplementary Experiment
 
-Thank you for the constructive suggestion. We have added and reported the **$R^2$ (coefficient of determination)** metric on the **CA** dataset. $R^2$ measures the **proportion of variance explained** by the model, ranging over $(-\infty, 1]$; values closer to 1 indicate a better fit/prediction, whereas negative values indicate performance worse than a simple baseline (e.g., predicting the mean). On **CA**, our method attains the **best $R^2$**, corroborating its effectiveness. Detailed numbers appear in **Tables 1**. We also include the **12-step-ahead** setting to assess short-horizon performance; the corresponding results are incorporated into **Tables 1** and align with our main findings. **Figure 2** visualizes these performance comparisons, clearly illustrating our model's consistent superiority across all metrics and forecasting horizons. **Table 2** shows 96⇒12 forecasting results on SD, GBA, GLA, and CA.
+Dataset statistics are summarized in **Table 1**.
 
-Beyond that, we add experiments on the **Electricity** dataset spanning **24⇒12/24/48/168** horizons to evaluate robustness and generalization across look-ahead settings. The results are summarized in **Table 3** and remain consistent with those on other datasets.  **Figure 3** visualizes these performance comparisons, clearly illustrating our model's consistent superiority across all metrics and forecasting horizons.
 
-In addition, **Table 4** lists the **batch-size** configurations used by different models across datasets to facilitate reproducibility and ensure a fair comparison. **Table 5** further reports the spatial similarity ratio across datasets (cosine similarity > 0.7 at the same timestamp), providing a concise reference for cross-node correlation.
+<p align="center"><b>Table&nbsp;1</b> Dataset statistics.</p>
+
+| Data | #nodes | Time interval | Time range           | Std    | Mean   | Features     | #Samples       |
+| ---- | ------ | ------------- | -------------------- | ------ | ------ | ------------ | -------------- |
+| SD   | 716    | 15 minute     | [1/1/2019, 1/1/2020) | 184.02 | 244.31 | traffic flow | 24.5M～25.0M   |
+| GBA  | 2,352  | 15 minute     | [1/1/2019, 1/1/2020) | 166.67 | 239.82 | traffic flow | 80.6M～82.1M   |
+| GLA  | 3,834  | 15 minute     | [1/1/2019, 1/1/2020) | 187.77 | 276.82 | traffic flow | 131.4M～133.8M |
+| CA   | 8,600  | 15 minute     | [1/1/2019, 1/1/2020) | 177.12 | 237.39 | traffic flow | 294.7M～300.1M |
+
+For more dataset details, refer to literature [1].
+
+Thank you for the constructive suggestion. We have added and reported the **$R^2$ (coefficient of determination)** metric on the **CA** dataset. $R^2$ measures the **proportion of variance explained** by the model, ranging over $(-\infty, 1]$; values closer to 1 indicate a better fit/prediction, whereas negative values indicate performance worse than a simple baseline (e.g., predicting the mean). On **CA**, our method attains the **best $R^2$**, corroborating its effectiveness. Detailed numbers appear in **Tables 2**. We also include the **12-step-ahead** setting to assess short-horizon performance; the corresponding results are incorporated into **Tables 2** and align with our main findings. **Figure 2** visualizes these performance comparisons, clearly illustrating our model's consistent superiority across all metrics and forecasting horizons. **Table 3** shows 96⇒12 forecasting results on SD, GBA, GLA, and CA.
+
+Beyond that, we add experiments on the **Electricity** dataset spanning **24⇒12/24/48/168** horizons to evaluate robustness and generalization across look-ahead settings. The results are summarized in **Table 4** and remain consistent with those on other datasets.  **Figure 3** visualizes these performance comparisons, clearly illustrating our model's consistent superiority across all metrics and forecasting horizons.
+
+In addition, **Table 5** lists the **batch-size** configurations used by different models across datasets to facilitate reproducibility and ensure a fair comparison. **Table 6** further reports the spatial similarity ratio across datasets (cosine similarity > 0.7 at the same timestamp), providing a concise reference for cross-node correlation.
 
 
 <p align="center">
-  <b>Table&nbsp;1</b> Performance comparisons on the CA dataset (96⇒12/48/96/672).  
+  <b>Table&nbsp;2</b> Performance comparisons on the CA dataset (96⇒12/48/96/672).  
   <b>Bold</b> indicates first place,  
   <u>underline</u> indicates second place.  
   The notation "96⇒12" denotes training on the past 96 time steps to predict the next 12 time steps.  
@@ -25,7 +39,7 @@ In addition, **Table 4** lists the **batch-size** configurations used by differe
 </p>
 
 
-![Table 1](src/results1.png)
+![Table 2](src/results1.png)
 
 <p align="center">
   <img src="src\CA_performance_MAE.png" alt="MAE Performance" width="24%">
@@ -36,17 +50,17 @@ In addition, **Table 4** lists the **batch-size** configurations used by differe
 <p align="center"><b>Figure&nbsp;2</b> Performance Evaluation of Models across Different Forecasting Horizons on the CA Dataset.</p>
 
 <p align="center">
-  <b>Table&nbsp;2</b> Short-term forecasting comparisons on the SD, GBA, GLA, and CA datasets (96⇒12).  
+  <b>Table&nbsp;3</b> Short-term forecasting comparisons on the SD, GBA, GLA, and CA datasets (96⇒12).  
   <b>Bold</b> indicates first place,  
   <u>underline</u> indicates second place.  
   The notation "96⇒12" denotes training on the past 96 time steps to predict the next 12 time steps.  
   "<b>OOM</b>" indicates out-of-memory errors due to resource limitations.  
 </p>
 
-![Table 2](src/Short_term_forecasting.png)
+![Table 3](src/Short_term_forecasting.png)
 
 <p align="center">
-  <b>Table&nbsp;3</b> Performance comparisons on the Electricity dataset (24⇒12/24/48/168).  
+  <b>Table&nbsp;4</b> Performance comparisons on the Electricity dataset (24⇒12/24/48/168).  
   <b>Bold</b> indicates first place,  
   <u>underline</u> indicates second place.  
   The notation "24⇒12" denotes training on the past 24 time steps to predict the next 12 time steps.  
@@ -55,7 +69,7 @@ In addition, **Table 4** lists the **batch-size** configurations used by differe
 </p>
 
 
-![Table 3](src/results2.png)
+![Table 4](src/results2.png)
 
 <p align="center">
   <img src="src\Electricity_performance_MAE.png" alt="MAE Performance" width="24%">
@@ -66,18 +80,18 @@ In addition, **Table 4** lists the **batch-size** configurations used by differe
 <p align="center"><b>Figure&nbsp;3</b> Performance Evaluation of Models across Different Forecasting Horizons on the Electricity Dataset.</p>
 
 
-<p align="center"><b>Table&nbsp;4</b> Batch size settings for all baselines.</p>
+<p align="center"><b>Table&nbsp;5</b> Batch size settings for all baselines.</p>
 
 <p align="center">
-<img src="src/model-batch.png" alt="Table 3 Results" style="width:40%;">
+<img src="src/model-batch.png" alt="Table 5" style="width:40%;">
 </p>
 
 
 
-<p align="center"><b>Table&nbsp;5</b> Proportion of Samples with Spatial Similarity (Percentage of sample pairs with cosine similarity > 0.7 at the same timestamp). </p>
+<p align="center"><b>Table&nbsp;6</b> Proportion of Samples with Spatial Similarity (Percentage of sample pairs with cosine similarity > 0.7 at the same timestamp). </p>
 
 <p align="center">
-<img src="src/percentage.png" alt="Table 5" style="width:60%;">
+<img src="src/percentage.png" alt="Table 6" style="width:60%;">
 </p>
 
 ## 2. Experimental Details
