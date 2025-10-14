@@ -251,7 +251,7 @@ python main-master/experiments/evaluate.py -cfg  FaST/SD_96_672.py -ckpt Paramet
 <b>Table&nbsp;8</b> presents the performance comparison of different models on time series forecasting tasks. "T" refers to temporal-centric methods, while "ST" denotes spatial-temporal-centric methods. Best-performing results are bolded. The notation "96=>48" denotes training on the past 96 time steps to predict the next 48.
 </p>
 
-<p align="center"><b>Table&nbsp;7</b> Performance comparisons.</p>
+<p align="center"><b>Table&nbsp;8</b> Performance comparisons.</p>
 
 ![Table 8](src/results3.png)
 
