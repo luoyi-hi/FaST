@@ -45,6 +45,13 @@ In addition, **Table 3** lists the **batch-size** configurations used by differe
 <img src="src/model-batch.png" alt="Table 3 Results" style="width:40%;">
 </p>
 
+<p align="center">
+  <img src="src\CA_performance_MAE.png" alt="MAE Performance" width="24%">
+  <img src="src\CA_performance_RMSE.png" alt="RMSE Performance" width="24%">
+  <img src="src\CA_performance_MAPE.png" alt="MAPE Performance" width="24%">
+  <img src="src\CA_performance_R2.png" alt="R² Performance" width="24%">
+</p>
+
 <p align="center"><b>Table&nbsp;4</b> Proportion of Samples with Spatial Similarity (Percentage of sample pairs with cosine similarity > 0.7 at the same timestamp). </p>
 
 <p align="center">
