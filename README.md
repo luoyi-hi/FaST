@@ -25,7 +25,7 @@ In addition, **Table 4** lists the **batch-size** configurations used by differe
 </p>
 
 
-![Table 1 Results1](src/results1.png)
+![Table 1](src/results1.png)
 
 <p align="center">
   <img src="src\CA_performance_MAE.png" alt="MAE Performance" width="24%">
@@ -46,7 +46,7 @@ In addition, **Table 4** lists the **batch-size** configurations used by differe
 ![Table 2](src\Short-term-forecasting.png)
 
 <p align="center">
-  <b>Table&nbsp;2</b> Performance comparisons on the Electricity dataset (24⇒12/24/48/168).  
+  <b>Table&nbsp;3</b> Performance comparisons on the Electricity dataset (24⇒12/24/48/168).  
   <b>Bold</b> indicates first place,  
   <u>underline</u> indicates second place.  
   The notation "24⇒12" denotes training on the past 24 time steps to predict the next 12 time steps.  
@@ -55,7 +55,7 @@ In addition, **Table 4** lists the **batch-size** configurations used by differe
 </p>
 
 
-![Table 2 Results1](src/results2.png)
+![Table 3](src/results2.png)
 
 <p align="center">
   <img src="src\Electricity_performance_MAE.png" alt="MAE Performance" width="24%">
@@ -66,7 +66,7 @@ In addition, **Table 4** lists the **batch-size** configurations used by differe
 <p align="center"><b>Figure&nbsp;3</b> Performance Evaluation of Models across Different Forecasting Horizons on the Electricity Dataset.</p>
 
 
-<p align="center"><b>Table&nbsp;3</b> Batch size settings for all baselines.</p>
+<p align="center"><b>Table&nbsp;4</b> Batch size settings for all baselines.</p>
 
 <p align="center">
 <img src="src/model-batch.png" alt="Table 3 Results" style="width:40%;">
@@ -74,10 +74,10 @@ In addition, **Table 4** lists the **batch-size** configurations used by differe
 
 
 
-<p align="center"><b>Table&nbsp;4</b> Proportion of Samples with Spatial Similarity (Percentage of sample pairs with cosine similarity > 0.7 at the same timestamp). </p>
+<p align="center"><b>Table&nbsp;5</b> Proportion of Samples with Spatial Similarity (Percentage of sample pairs with cosine similarity > 0.7 at the same timestamp). </p>
 
 <p align="center">
-<img src="src/percentage.png" alt="Table 4 Results" style="width:60%;">
+<img src="src/percentage.png" alt="Table 5" style="width:60%;">
 </p>
 
 ## 2. Experimental Details
