@@ -43,7 +43,7 @@ In addition, **Table 4** lists the **batch-size** configurations used by differe
   "<b>OOM</b>" indicates out-of-memory errors due to resource limitations.  
 </p>
 
-![Table 1 Results1](src\Short-term-forecasting.png)
+![Table 2](src\Short-term-forecasting.png)
 
 <p align="center">
   <b>Table&nbsp;2</b> Performance comparisons on the Electricity dataset (24⇒12/24/48/168).  
