@@ -21,6 +21,17 @@ The dataset statistics are summarized in **Table 1**.
 | GLA  | 3,834  | 98,703  | 25.7   | 15 minute     | [1/1/2019, 1/1/2020) | 187.77 | 276.82 | 131.4M～133.8M | 45.80%     | 5.72%        | 999       | traffic flow |
 | CA   | 8,600  | 201,363 | 23.4   | 15 minute     | [1/1/2019, 1/1/2020) | 177.12 | 237.39 | 294.7M～300.1M | 41.87%     | 5.99%        | 999       | traffic flow |
 
+e illustrate how two critical meta features — **highway categories** and **number of lanes** — relate to traffic flow.  
+- **(a)** and **(c)** show the distributions of these features across four real-world datasets.  
+- **(b)** and **(d)** present violin plots of average traffic flow on the CA dataset, categorized by highway type and number of lanes, respectively.
+
+The results reveal that interstate highways and roads with more lanes generally exhibit higher traffic volumes, reflecting their design for heavy-duty transportation and capacity expansion. These insights support the importance of integrating meta features as external knowledge to improve traffic forecasting models.
+
+<p align="center">
+  <img src="src/Distribution.png" width="100%">
+</p>
+<p align="center"><b>Figure&nbsp;2</b> Impact of Highway Types and Lane Numbers on Traffic Flow [1]</p>
+
 > For more dataset details, refer to [1].
 
 ---
