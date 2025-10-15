@@ -64,7 +64,7 @@ Where:
 
 We report the **$R^2$ (coefficient of determination)** metric on the **CA** dataset, which measures the **proportion of variance explained** by the model. Higher values (closer to 1) indicate better predictive performance.
 
-**Table 2** and **Figure 2** summarize the results on CA dataset under 96⇒{12, 48, 96, 672} forecasting horizons.
+**Table 2** and **Figure 3** summarize the results on CA dataset under 96⇒{12, 48, 96, 672} forecasting horizons.
 
 <p align="center">
   <b>Table&nbsp;2</b> Performance comparisons on the CA dataset (96⇒12/48/96/672).  
@@ -81,7 +81,7 @@ We report the **$R^2$ (coefficient of determination)** metric on the **CA** data
   <img src="src/CA_performance_MAPE.png" width="24%">
   <img src="src/CA_performance_R2.png" width="24%">
 </p>
-<p align="center"><b>Figure&nbsp;2</b> CA dataset results across forecasting horizons.</p>
+<p align="center"><b>Figure&nbsp;3</b> CA dataset results across forecasting horizons.</p>
 
 ---
 
@@ -115,7 +115,7 @@ To assess generalization, we further evaluate on **Electricity dataset** with ho
   <img src="src/Electricity_performance_MAPE.png" width="24%">
   <img src="src/Electricity_performance_R2.png" width="24%">
 </p>
-<p align="center"><b>Figure&nbsp;3</b> Electricity dataset results across forecasting horizons.</p>
+<p align="center"><b>Figure&nbsp;4</b> Electricity dataset results across forecasting horizons.</p>
 
 ---
 
