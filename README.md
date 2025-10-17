@@ -2,7 +2,7 @@
 
 The architecture of FaST, as shown in Figure 1, comprises three components: 1) Temporal Compression Input with MoE to condense historical sequences into low-dimensional representations. 2) Heterogeneity-aware MoE with a router and GLU experts for the extraction of various spatial-temporal characteristics. 3) Adaptive Graph Agent Attention Module for efficient long-range spatial interactions and multilayer feature capture.
 
-![Figure 1](./src/model.png)
+![Figure 1](./src/model.jpg)
 
 <p align="center"><b>Figure&nbsp;1</b> Architecture of FaST.</p>
 
