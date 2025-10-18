@@ -41,6 +41,21 @@ $$\epsilon^l = \|H_t^{l-1} - P^l H_t^{l-1}\|_F / \|H_t^{l-1}\|_F$$
 
 (Frobenius norm, excluding $W_v^l$ for focused compression analysis, as it primarily serves as a learned transformation). This is a low-rank approximation of a full attention matrix, akin to the Nyström method for kernel approximation [1].
 
+**Theoretical Foundation (Lower Bound)**: The AGA-Att module functions as a lossy low-rank approximation, with bounds derived from matrix theory. Consider the singular value decomposition (SVD) of $H_t^{l-1} = U \Sigma V^\top$, where $\Sigma$ contains singular values $\sigma_1 \geq \dots \geq \sigma_d$. By the Eckart-Young-Mirsky theorem [2], the optimal rank-$a$ approximation error is bounded below by $\epsilon^l \geq \sqrt{\sum_{i=a+1}^d \sigma_i^2} / \|H_t^{l-1}\|_F$. 
+
+> `Lower Bound Proof`: The Eckart-Young-Mirsky theorem states that for any matrix $M$ and rank-$k$ approximation $\hat{M}$, $\|M - \hat{M}\|_F \geq \sqrt{\sum_{i=k+1}^{\min(m,n)} \sigma_i^2}$, where $\sigma_i$ are the singular values of $M$. Here, $M = H_t^{l-1}$, and $\bf{\hat{M}} = P^l H_t^{l-1}$ has rank at most $a$ (since $A_{\rm{agg}}^l$ and $A_{\rm{dist}}^l$ involve $a$ agent tokens as inducing points). Thus, the normalized error $\epsilon^l$ is at least the sum of the tail singular values (normalized), reflecting the minimal information loss for any rank-$a$ projection. AGA-Att approximates this optimum through learned agent tokens.
+
+**Theoretical Foundation (Upper Bound)**: For the learned $P^l$, which approximates a Nyström-style projection (as agent tokens act as inducing points) [3], an upper bound is $\mathbb{E}[\epsilon^l] \leq \sqrt{\sum_{i=a+1}^N \lambda_i^2} / \|H_t^{l-1}\|_F + O(1/\sqrt{a})$, where $\lambda_i$ are eigenvalues of the Gram matrix $H_t^{l-1}{(H_t^{l-1})}^\top$.
+
+> `Upper Bound Proof`: In the Nyström method, for a Gram matrix $K = H_t^{l-1}{(H_t^{l-1})}^\top$, sampling $a$ inducing points (here, learned agent tokens) yields an approximation $\hat{K} = K_{N,a} K_{a,a}^{-1} K_{a,N}$, with error bound $\|K - \hat{K}\|_F \leq \|K - K_a^*\|_F + O(\sqrt{a} \cdot \text{trace}(K)/a)$ in expectation (under uniform sampling; learned agent tokens improve this empirically) [3]. Normalizing and adapting to our projection $P^l$ (which mimics $\bf{\hat{K}} / \text{trace}(K)$ for attention-like scaling), the bound incorporates the optimal low-rank error plus a sampling term that decays as $O(1/\sqrt{a})$, ensuring fidelity improves with more agent tokens in redundant data.
+
+> [1] Drineas P, Mahoney M W, Cristianini N. On the Nyström Method for Approximating a Gram Matrix for Improved Kernel-Based Learning[J]. Journal of Machine Learning Research, 2005, 6(12).
+
+> [2] Eckart C, Young G. The approximation of one matrix by another of lower rank[J]. Psychometrika, 1936, 1(3): 211-218.
+
+> [3] Williams C, Seeger M. Using the Nyström method to speed up kernel machines[J]. Advances in Neural Information Processing Systems, 2000, 13.
+
+
 Table 2 reports reconstruction errors were computed on the SD dataset (96 => 48). For layer $l=1$, as the number of agent tokens *#agent* = \{16, 32, 64, 128\}, $\epsilon^1$ = \{0.611, 0.512, 0.488, 0.484\}, demonstrating a monotonic decrease and diminishing returns. This trend illustrates that raw spatial redundancy is most pronounced in early layers, where increasing *#agent* effectively captures more of the dominant modes, aligning with theoretical expectations for initial feature processing. However, the overall predictive performance reflects the cumulative effects across all layers, including refinements from HA-MoE. To quantify this, average reconstruction errors across layers were calculated: $\epsilon_{\text{avg}}$ = \{0.627, 0.620, 0.630, 0.632\}. Pearson correlation analysis reveals a **strong positive association** between $\epsilon_{\text{avg}}$ and both **MAE**=\{19.75, 19.37, 20.02, 19.87\} (`coefficient 0.929, p-value 0.071`) and **RMSE**=\{35.22, 34.54, 36.27, 36.23\} (`coefficient 0.955, p-value 0.045`), indicating that lower average fidelity corresponds to improved predictive accuracy. The optimal MAE/RMSE performance is achieved at *#agent* =32 while $\epsilon_{\text{avg}}$ is minimized, followed by a slight degradation due to layer interactions that enhance feature diversity. **Nonetheless, all errors remain bounded below 0.75 across configurations, confirming that the approximation suffices for downstream forecasting while enabling scalability.**
 
 <p align="center">
@@ -107,7 +122,10 @@ Such disparities arise from differences in road design, speed limits, and access
 </p>
 <p align="center"><b>Figure&nbsp;2</b> Impact of Highway Types and Lane Numbers on Traffic Flow [1].</p>
 
-> For more dataset details, refer to [1].
+> For more dataset details, refer to [4].
+> 
+> [1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. *LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting*. In NeurIPS 2023.
+
 
 ---
 
@@ -156,12 +174,6 @@ We report the **$R^2$ (coefficient of determination)** metric on the **CA** data
 <p align="center">
 <img src="src/model-batch.png" alt="Table 6" style="width:40%;">
 </p>
-
----
-
-### Reference
-
-[1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. *LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting*. In NeurIPS 2023.
 
 
 ---
