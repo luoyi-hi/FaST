@@ -172,7 +172,7 @@ We report the **$R^2$ (coefficient of determination)** metric on the **CA** data
 <p align="center"><b>Table&nbsp;6</b> Batch size settings for all baselines.</p>
 
 <p align="center">
-<img src="src/model-batch.png" alt="Table 6" style="width:40%;">
+<img src="src/batch.png" alt="Table 6" style="width:40%;">
 </p>
 
 
