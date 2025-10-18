@@ -58,7 +58,7 @@ $$\epsilon^l = \|H_t^{l-1} - P^l H_t^{l-1}\|_F / \|H_t^{l-1}\|_F$$
 
 Table 2 reports reconstruction errors were computed on the SD dataset (96 => 48). For layer $l=1$, as the number of agent tokens *#agent* = \{16, 32, 64, 128\}, $\epsilon^1$ = \{0.611, 0.512, 0.488, 0.484\}, demonstrating a monotonic decrease and diminishing returns. This trend illustrates that raw spatial redundancy is most pronounced in early layers, where increasing *#agent* effectively captures more of the dominant modes, aligning with theoretical expectations for initial feature processing. However, the overall predictive performance reflects the cumulative effects across all layers, including refinements from HA-MoE. To quantify this, average reconstruction errors across layers were calculated: $\epsilon_{\text{avg}}$ = \{0.627, 0.620, 0.630, 0.632\}. Pearson correlation analysis reveals a **strong positive association** between $\epsilon_{\text{avg}}$ and both **MAE**=\{19.75, 19.37, 20.02, 19.87\} (`coefficient 0.929, p-value 0.071`) and **RMSE**=\{35.22, 34.54, 36.27, 36.23\} (`coefficient 0.955, p-value 0.045`), indicating that lower average fidelity corresponds to improved predictive accuracy. The optimal MAE/RMSE performance is achieved at *#agent* =32 while $\epsilon_{\text{avg}}$ is minimized, followed by a slight degradation due to layer interactions that enhance feature diversity. **Nonetheless, all errors remain bounded below 0.75 across configurations, confirming that the approximation suffices for downstream forecasting while enabling scalability.**
 
-<p align="center">
+<p align="left">
   <b>Table&nbsp;2</b> Reconstruction errors on the SD dataset (96 => 48).
 </p>
 
