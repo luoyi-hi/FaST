@@ -151,7 +151,7 @@ To evaluate short-horizon forecasting, we report 96⇒12 results on SD, GBA, GLA
 
 ---
 
-### 1.5 $R^2$ on CA Dataset
+### 1.6 $R^2$ on CA Dataset
 
 We report the **$R^2$ (coefficient of determination)** metric on the **CA** dataset, which measures the **proportion of variance explained** by the model. Higher values (closer to 1) indicate better predictive performance. 
 
@@ -167,7 +167,7 @@ We report the **$R^2$ (coefficient of determination)** metric on the **CA** data
 
 ---
 
-### 1.6 Reproducibility Settings
+### 1.7 Reproducibility Settings
 
 <p align="center"><b>Table&nbsp;6</b> Batch size settings for all baselines.</p>
 
