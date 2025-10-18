@@ -3,16 +3,85 @@
 
 ![Figure 1](./src/model.jpg)
 
-<p align="justify"><b>Figure&nbsp;1</b> Architecture of FaST. **① Input Layer:** The heterogeneity-aware MoE module (HA-MoE) assigns expert scores via the heterogeneity-aware router and integrates parallelized GLU expert features, converting input sequences into dense feature vectors. These features are subsequently enhanced with adaptive spatial and temporal embeddings. **② Network Backbone:** Composed of stacked residual blocks. Each block employs the Adaptive Graph Agent Attention (AGA-Att) module to aggregate node features into a small number of adaptive agent tokens and redistribute them to nodes, followed by normalization and residual addition. Then, the HA-MoE module integrates expert outputs, followed by residual addition and normalization. This block leverages AGA-Att's low-rank approximation of pairwise interactions and HA-MoE enhancement to efficiently capture diverse spatiotemporal patterns. **③ Prediction Layer:** Outputs from all layers are concatenated and input into a multi-layer perceptron (MLP) predictor to generate prediction results.</p>
+**Figure 2. Architecture of FaST.** **① Input Layer:** The heterogeneity-aware MoE module (HA-MoE) assigns expert scores via the heterogeneity-aware router and integrates parallelized GLU expert features, converting input sequences into dense feature vectors. These features are subsequently enhanced with adaptive spatial and temporal embeddings. **② Network Backbone:** Composed of stacked residual blocks. Each block utilizes the Adaptive Graph Agent Attention (AGA-Att) module to aggregate node features into a small number of adaptive agent tokens, redistributing them to nodes, followed by residual addition and normalization. Then, the HA-MoE module integrates expert outputs, followed by residual addition and normalization. This block leverages AGA-Att's low-rank approximation of pairwise interactions and HA-MoE enhancement to efficiently capture diverse spatiotemporal patterns. **③ Prediction Layer:** Outputs from all layers are concatenated and input into a multi-layer perceptron (MLP) predictor to generate prediction results.
+
 
 ## 1. Supplementary Experiment
 
-### 1.1 Dataset Statistics
-1
+---
+
+### 1.1 Model Generalization on New Dataset
+
+To assess generalization, we further evaluate on **Electricity dataset** (321 nodes, 1-hour intervals, Spatial Similarity Ratio=66.34%) with horizons of 24⇒{12,24,48,168}. The FaST model performs well on this dataset, achieving superior predictive performance compared to baselines by 12-19% MAPE.
+
+<p align="center">
+  <b>Table&nbsp;1</b> Performance comparisons on the Electricity dataset.
+</p>
+
+![Table 4](src/results2.png)
+
+<p align="center">
+  <img src="src/Electricity_performance_MAE.png" width="24%">
+  <img src="src/Electricity_performance_RMSE.png" width="24%">
+  <img src="src/Electricity_performance_MAPE.png" width="24%">
+  <img src="src/Electricity_performance_R2.png" width="24%">
+</p>
+<p align="center"><b>Figure&nbsp;1</b> Electricity dataset results across forecasting horizons.</p>
+
+Several baselines (RPMixer/SGP) will be added later due to data pipeline complexity.  
+
+---
+### 1.2 Empirical Results for Reconstruction Errors.
+
+**Design Principle of Reconstruction Error**: To assess fidelity, the reconstruction error quantifies how effectively AGA-Att preserves input features post-approximation. As defined in Equation 11, AGA-Att($H_t^{l-1}$) = $A_{\rm{dist}}^l (A_{\rm{agg}}^l H_t^{l-1} W_v^l)$. 
+The effective projection matrix is $P^l = A_{\rm{dist}}^l A_{\rm{agg}}^l \in R^{N \times N}$, 
+and the error is $$\epsilon^l = \|H_t^{l-1} - P^l H_t^{l-1}\|_F / \|H_t^{l-1}\|_F$$ (Frobenius norm, excluding $W_v^l$ for focused compression analysis, as it primarily serves as a learned transformation). This is a low-rank approximation of a full attention matrix, akin to the Nyström method for kernel approximation [1].
+
+Table 2 reports reconstruction errors were computed on the SD dataset (96 => 48). For layer $l=1$, as the number of agent tokens *#agent* = \{16, 32, 64, 128\}, $\epsilon^1$ = \{0.611, 0.512, 0.488, 0.484\}, demonstrating a monotonic decrease and diminishing returns. This trend illustrates that raw spatial redundancy is most pronounced in early layers, where increasing *#agent* effectively captures more of the dominant modes, aligning with theoretical expectations for initial feature processing. However, the overall predictive performance reflects the cumulative effects across all layers, including refinements from HA-MoE. To quantify this, average reconstruction errors across layers were calculated: $\epsilon_{\text{avg}}$ = \{0.627, 0.620, 0.630, 0.632\}. Pearson correlation analysis reveals a **strong positive association** between $\epsilon_{\text{avg}}$ and both **MAE**=\{19.75, 19.37, 20.02, 19.87\} (`coefficient 0.929, p-value 0.071`) and **RMSE**=\{35.22, 34.54, 36.27, 36.23\} (`coefficient 0.955, p-value 0.045`), indicating that lower average fidelity corresponds to improved predictive accuracy. The optimal MAE/RMSE performance is achieved at *#agent* =32 while $\epsilon_{\text{avg}}$ is minimized, followed by a slight degradation due to layer interactions that enhance feature diversity. **Nonetheless, all errors remain bounded below 0.75 across configurations, confirming that the approximation suffices for downstream forecasting while enabling scalability.**
+
+<p align="center">
+  <b>Table&nbsp;2</b> Reconstruction errors on the SD dataset (96 => 48).
+</p>
+
+| agent | 16    | 32    | 64    | 128   |
+|-|-|-|-|-|
+| $\epsilon^1 (l=1)$ | 0.611 | 0.512 | 0.488 | 0.484 |
+| $\epsilon^2 (l=2)$ | 0.617 | 0.685 | 0.726 | 0.755 |
+| $\epsilon^3 (l=3)$ | 0.652 | 0.663 | 0.677 | 0.665 |
+| $\epsilon_{\text{avg}}$   | 0.627 | 0.620 | 0.630 | 0.635 |
+| MAE   | 19.75 | 19.37 | 20.02 | 19.87 |
+| RMSE  | 35.22 | 34.54 | 36.27 | 36.23 |
+
+---
+### 1.3 Extensions to Other Fields
+
+FaST is designed for datasets with **pronounced spatial redundancy** (e.g., traffic, power, environmental sensors) and **temporal heterogeneity** (e.g., daily peaks, trends). The framework works particularly well for `large-scale spatial-temporal data` with high spatial correlation and temporal variation.
+
+**Quantifying Spatial Redundancy via Cosine Similarity.**
+
+To operationalize applicability, we compute node-pair similarity on concatenated sequences (historical $T$ steps + ground-truth future $P$ steps), thereby capturing the full dynamics. For a dataset with $N$ nodes, at each time $t$ (sampled over $M$ windows), form sequences $\bf{s}_i^{(t)} = [\bf{x}_{t-T+1,i}, \dots, \bf{x}_{t,i}; \bf{x}_{t+1,i}, \dots, \bf{x}_{t+P,i}] \in R^{T+P}$ (normalized to zero-mean unit-variance). Cosine similarity between nodes $i,j$:
+
+$$
+S_{ij}^{(t)} = \frac{\bf{s}_i^{(t)} \cdot \bf{s}_j^{(t)}}{\|\bf{s}_i^{(t)}\|_2 \|\bf{s}_j^{(t)}\|_2} = \frac{\sum_{k=1}^{T+P} s_{i,k}^{(t)} s_{j,k}^{(t)}}{\sqrt{\sum_{k=1}^{T+P} (s_{i,k}^{(t)})^2} \sqrt{\sum_{k=1}^{T+P} (s_{j,k}^{(t)})^2}}
+$$
+
+The redundancy ratio (proportion of highly similar pairs, threshold $\tau=0.7$) is:
+
+$$
+\text{Ratio} = \frac{N_{\text{highly similar}}}{N_{\text{total possible}}} = \frac{\sum_{t=1}^{M} \sum_{i=1}^{N-1} \sum_{j=i+1}^{N} \mathbb{I}(S_{ij}^{(t)} > \tau)}{M \cdot \frac{N(N-1)}{2}}
+$$
+
+**Analysis**: On traffic (LargeST: SD/GBA/GLA/CA, $T=96, P=672$): Ratios = {48.36%, 41.62%, 45.80%, 41.87%}, reflecting high redundancy, which justifies that AGA-Att's agent tokens are fewer needed for summarization. 
+
+**Extensions to Other Fields**: FaST naturally extends, replacing traffic flows with variables such as electricity demand, precipitation, or temperature. For meteorology (e.g., stations as nodes, edges by distance): High spatial redundancy (regional weather patterns) suits AGA-Att; non-stationarity (seasonal/diurnal) benefits HA-MoE. 
+Similar to traffic data, power demand datasets often exhibit high spatial redundancy (e.g., power stations across a region) and temporal heterogeneity (e.g., daily load cycles, seasonal trends). FaST can be applied to power demand forecasting, where the model captures both the spatial correlations between power stations and the temporal dynamics of energy consumption. Limitations: For sparse/low-redundancy graphs (e.g., social networks), increase $a$; for extreme non-stationarity, add trend decomposition pre-processing.
+
+---
+### 1.4 Statistics on Traffic Datasets
 
 The dataset statistics are summarized in **Table 1**.
 
-<p align="center"><b>Table&nbsp;1</b> Dataset statistics.</p>
+<p align="center"><b>Table&nbsp;3</b> Dataset statistics.</p>
 
 | Data | #nodes | Edges   | Degree | Time interval | Time range           | Std    | Mean   | #Samples       | Similarity | Missing rate | Max_value | Features     |
 | ---- | ------ | ------- | ------ | ------------- | -------------------- | ------ | ------ | -------------- | ---------- | ------------ | --------- | ------------ |
@@ -21,7 +90,7 @@ The dataset statistics are summarized in **Table 1**.
 | GLA  | 3,834  | 98,703  | 25.7   | 15 minute     | [1/1/2019, 1/1/2020) | 187.77 | 276.82 | 131.4M～133.8M | 45.80%     | 5.72%        | 999       | traffic flow |
 | CA   | 8,600  | 201,363 | 23.4   | 15 minute     | [1/1/2019, 1/1/2020) | 177.12 | 237.39 | 294.7M～300.1M | 41.87%     | 5.99%        | 999       | traffic flow |
 
-**Figure 2** illustrates how two critical meta features — **highway categories** and **number of lanes** — relate to traffic flow.  
+**Figure 2** illustrates how two critical meta features  (**highway categories** and **number of lanes**) relate to traffic flow.
 - **(a)** and **(c)** depict the distributions of these features across four real-world datasets, revealing notable differences in feature prevalence.  
 - **(b)** and **(d)** present violin plots of traffic flow in the CA dataset, categorized by these features, further highlighting their impact on flow variations.
 
@@ -37,43 +106,16 @@ Such disparities arise from differences in road design, speed limits, and access
 
 ---
 
-### 1.2 Data Normalization and Similarity Metric
+### 1.5 Short-term Forecasting on Four Datasets
 
-To eliminate dimensional differences among node-wise time series, we apply **Z-Score normalization** for each sequence $x$ of length `L`:
-
-$$x' = \frac{x - \mu}{\sigma}$$
-
-where $\mu$ and $\sigma$ are the mean and standard deviation of the sequence $x$.
-
-To measure similarity between two normalized sequences $\mathbf{A}$ and $\mathbf{B}$, we use cosine similarity:
-
-$$\text{Similarity}(\mathbf{A}, \mathbf{B}) = \frac{\mathbf{A} \cdot \mathbf{B}}{\|\mathbf{A}\| \|\mathbf{B}\|} = \frac{\sum_{i=1}^{L} A_i B_i}{\sqrt{\sum_{i=1}^{L} A_i^2} \sqrt{\sum_{i=1}^{L} B_i^2}}$$
-
-This metric is then used to evaluate the proportion of highly similar node pairs (cosine similarity > $\tau = 0.7$):
-
-$$\text{Ratio} = \frac{N_{\mathrm{highly\_similar}}}{N_{\mathrm{total\_possible}}}$$
-
-Where:
-
-- $N_{\mathrm{highly\_similar}} = \sum_{k=1}^{M} \sum_{i=1}^{N-1} \sum_{j=i+1}^{N} \mathbb{I}(S^{(k)}_{ij} > \tau)$  
-- $N_{\mathrm{total\_possible}} = M \times \binom{N}{2} = M \times \frac{N(N-1)}{2}$  
-
----
-
-### 1.3 Main Results on CA Dataset
-
-We report the **$R^2$ (coefficient of determination)** metric on the **CA** dataset, which measures the **proportion of variance explained** by the model. Higher values (closer to 1) indicate better predictive performance.
-
-**Table 2** and **Figure 3** summarize the results on CA dataset under 96⇒{12, 48, 96, 672} forecasting horizons.
+To evaluate short-horizon forecasting, we report 96⇒12 results on SD, GBA, GLA, and CA in Table 4, and prediction performance comparison across different horizons on the CA Dataset in Figure 3.
 
 <p align="center">
-  <b>Table&nbsp;2</b> Performance comparisons on the CA dataset (96⇒12/48/96/672).  
-  <b>Bold</b> indicates first place,  
-  <u>underline</u> indicates second place.  
+  <b>Table&nbsp;4</b> Short-term forecasting comparisons on SD, GBA, GLA, and CA datasets (96⇒12).  
   "<b>OOM</b>" denotes out-of-memory errors.  
 </p>
 
-![Table 2](src/results1.png)
+![Table 4](src/Short_term_forecasting.png)
 
 <p align="center">
   <img src="src/CA_performance_MAE.png" width="24%">
@@ -81,85 +123,33 @@ We report the **$R^2$ (coefficient of determination)** metric on the **CA** data
   <img src="src/CA_performance_MAPE.png" width="24%">
   <img src="src/CA_performance_R2.png" width="24%">
 </p>
-<p align="center"><b>Figure&nbsp;3</b> CA dataset results across forecasting horizons.</p>
+<p align="center"><b>Figure&nbsp;3</b> Prediction Performance Comparison Across Different Horizons on the CA Dataset.</p>
+
 
 ---
 
-### 1.4 Short-term Forecasting on Four Datasets
+### 1.5 $R^2$ on CA Dataset
 
-To evaluate short-horizon forecasting, we report 96⇒12 results on SD, GBA, GLA, and CA in **Table 3**.
+We report the **$R^2$ (coefficient of determination)** metric on the **CA** dataset, which measures the **proportion of variance explained** by the model. Higher values (closer to 1) indicate better predictive performance. 
 
 <p align="center">
-  <b>Table&nbsp;3</b> Short-term forecasting comparisons on SD, GBA, GLA, and CA datasets (96⇒12).  
+  <b>Table&nbsp;5</b> Performance comparisons on the CA dataset (96⇒12/48/96/672).  
+  <b>Bold</b> indicates first place,  
+  <u>underline</u> indicates second place.  
   "<b>OOM</b>" denotes out-of-memory errors.  
 </p>
 
-![Table 3](src/Short_term_forecasting.png)
+![Table 5](src/results1.png)
 
----
-
-### 1.5 Generalization on Electricity Dataset
-
-To assess generalization, we further evaluate on **Electricity dataset** with horizons of 24⇒{12,24,48,168}:
-
-<p align="center">
-  <b>Table&nbsp;4</b> Performance comparisons on the Electricity dataset.  
-  Several baselines will be added later due to data pipeline complexity.  
-</p>
-
-![Table 4](src/results2.png)
-
-<p align="center">
-  <img src="src/Electricity_performance_MAE.png" width="24%">
-  <img src="src/Electricity_performance_RMSE.png" width="24%">
-  <img src="src/Electricity_performance_MAPE.png" width="24%">
-  <img src="src/Electricity_performance_R2.png" width="24%">
-</p>
-<p align="center"><b>Figure&nbsp;4</b> Electricity dataset results across forecasting horizons.</p>
 
 ---
 
 ### 1.6 Reproducibility Settings
 
-<p align="center"><b>Table&nbsp;5</b> Batch size settings for all baselines.</p>
+<p align="center"><b>Table&nbsp;6</b> Batch size settings for all baselines.</p>
 
 <p align="center">
-<img src="src/model-batch.png" alt="Table 5" style="width:40%;">
-</p>
-
----
-
-### 1.7 Spatial Similarity Statistics
-
-<p align="center"><b>Table&nbsp;6</b> Spatial Similarity Ratio (cosine similarity > 0.7).</p>
-
-<p align="center">
-<img src="src/percentage.png" alt="Table 6" style="width:60%;">
-</p>
-
----
-
-### 1.8 Reconstruction Error Analysis
-
-The **reconstruction error** evaluates how well the agent representations reconstruct the original node features.
-
-Let:
-- $H_t \in \mathbb{R}^{N \times D}$ be the node features before agent attention
-- $A_{g2a} \in \mathbb{R}^{a \times N}$ be Graph→Agent attention
-- $A_{a2g} \in \mathbb{R}^{N \times a}$ be Agent→Graph attention
-
-Define the projection matrix:
-
-$$P = A_{a2g} \cdot A_{g2a} \in \mathbb{R}^{N \times N}$$
-
-The normalized reconstruction error is:
-
-$$\varepsilon = \frac{\lVert H_t - P H_t \rVert_F}{\lVert H_t \rVert_F}$$
-
-<p align="center"><b>Table&nbsp;7</b> Reconstruction Error under different #agents.</p>
-
-<p align="center">
-<img src="src/Reconstruction Error.png" alt="Table 7" style="width:60%;">
+<img src="src/model-batch.png" alt="Table 6" style="width:40%;">
 </p>
 
 ---
@@ -167,6 +157,10 @@ $$\varepsilon = \frac{\lVert H_t - P H_t \rVert_F}{\lVert H_t \rVert_F}$$
 ### Reference
 
 [1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. *LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting*. In NeurIPS 2023.
+
+
+---
+
 
 
 ## 2. Experimental Details
