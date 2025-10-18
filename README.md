@@ -1,10 +1,9 @@
 # FaST
 
-The architecture of FaST, as shown in Figure 1, comprises three components: 1) Temporal Compression Input with MoE to condense historical sequences into low-dimensional representations. 2) Heterogeneity-aware MoE with a router and GLU experts for the extraction of various spatial-temporal characteristics. 3) Adaptive Graph Agent Attention Module for efficient long-range spatial interactions and multilayer feature capture.
 
 ![Figure 1](./src/model.jpg)
 
-<p align="center"><b>Figure&nbsp;1</b> Architecture of FaST.</p>
+<p align="center"><b>Figure&nbsp;1</b> Architecture of FaST. ① Input Layer: The heterogeneity-aware MoE module (HA-MoE) assigns expert scores via the heterogeneity-aware router and integrates parallelized GLU expert features, converting input sequences into dense feature vectors. These features are subsequently enhanced with adaptive spatial and temporal embeddings. ② Network Backbone: Composed of stacked residual blocks. Each block employs the Adaptive Graph Agent Attention (AGA-Att) module to aggregate node features into a small number of adaptive agent tokens and redistribute them to nodes, followed by normalization and residual addition. Then, the HA-MoE module integrates expert outputs, followed by residual addition and normalization. This block leverages AGA-Att's low-rank approximation of pairwise interactions and HA-MoE enhancement to efficiently capture diverse spatiotemporal patterns. ③ Prediction Layer: Outputs from all layers are concatenated and input into a multi-layer perceptron (MLP) predictor to generate prediction results..</p>
 
 ## 1. Supplementary Experiment
 
