@@ -63,7 +63,8 @@ FaST is designed for datasets with **pronounced spatial redundancy** (e.g., traf
 
 **Quantifying Spatial Redundancy via Cosine Similarity.**
 
-To operationalize applicability, we compute node-pair similarity on concatenated sequences (historical $T$ steps + ground-truth future $P$ steps), thereby capturing the full dynamics. For a dataset with $N$ nodes, at each time $t$ (sampled over $M$ windows), form sequences $\mathbf{s}_i^{(t)} = [\mathbf{x}_{t-T+1,i}, \dots, \mathbf{x}_{t,i}; \mathbf{x}_{t+1,i}, \dots, \mathbf{x}_{t+P,i}] \in R^{T+P}$ (normalized to zero-mean unit-variance). Cosine similarity between nodes $i,j$:
+To operationalize applicability, we compute node-pair similarity on concatenated sequences (historical $T$ steps + ground-truth future $P$ steps), thereby capturing the full dynamics. For a dataset with $N$ nodes, at each time $t$ (sampled over $M$ windows), form sequences $s_i^{(t)} = [x_{t-T+1,i}, \dots, x_{t,i}; x_{t+1,i}, \dots, x_{t+P,i}] \in R^{T+P}$ 
+(normalized to zero-mean unit-variance). Cosine similarity between nodes $i,j$:
 
 $$
 S_{ij}^{(t)} = \frac{\bf{s}_i^{(t)} \cdot \bf{s}_j^{(t)}}{\|\bf{s}_i^{(t)}\|_2 \|\bf{s}_j^{(t)}\|_2} = \frac{\sum_{k=1}^{T+P} s_{i,k}^{(t)} s_{j,k}^{(t)}}{\sqrt{\sum_{k=1}^{T+P} (s_{i,k}^{(t)})^2} \sqrt{\sum_{k=1}^{T+P} (s_{j,k}^{(t)})^2}}
