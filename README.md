@@ -35,7 +35,11 @@ Several baselines (RPMixer/SGP) will be added later due to data pipeline complex
 
 **Design Principle of Reconstruction Error**: To assess fidelity, the reconstruction error quantifies how effectively AGA-Att preserves input features post-approximation. As defined in Equation 11, AGA-Att($H_t^{l-1}$) = $A_{\rm{dist}}^l (A_{\rm{agg}}^l H_t^{l-1} W_v^l)$. 
 The effective projection matrix is $P^l = A_{\rm{dist}}^l A_{\rm{agg}}^l \in R^{N \times N}$, 
-and the error is $$\epsilon^l = \|H_t^{l-1} - P^l H_t^{l-1}\|_F / \|H_t^{l-1}\|_F$$ (Frobenius norm, excluding $W_v^l$ for focused compression analysis, as it primarily serves as a learned transformation). This is a low-rank approximation of a full attention matrix, akin to the Nyström method for kernel approximation [1].
+and the error is 
+
+$$\epsilon^l = \|H_t^{l-1} - P^l H_t^{l-1}\|_F / \|H_t^{l-1}\|_F$$ 
+
+(Frobenius norm, excluding $W_v^l$ for focused compression analysis, as it primarily serves as a learned transformation). This is a low-rank approximation of a full attention matrix, akin to the Nyström method for kernel approximation [1].
 
 Table 2 reports reconstruction errors were computed on the SD dataset (96 => 48). For layer $l=1$, as the number of agent tokens *#agent* = \{16, 32, 64, 128\}, $\epsilon^1$ = \{0.611, 0.512, 0.488, 0.484\}, demonstrating a monotonic decrease and diminishing returns. This trend illustrates that raw spatial redundancy is most pronounced in early layers, where increasing *#agent* effectively captures more of the dominant modes, aligning with theoretical expectations for initial feature processing. However, the overall predictive performance reflects the cumulative effects across all layers, including refinements from HA-MoE. To quantify this, average reconstruction errors across layers were calculated: $\epsilon_{\text{avg}}$ = \{0.627, 0.620, 0.630, 0.632\}. Pearson correlation analysis reveals a **strong positive association** between $\epsilon_{\text{avg}}$ and both **MAE**=\{19.75, 19.37, 20.02, 19.87\} (`coefficient 0.929, p-value 0.071`) and **RMSE**=\{35.22, 34.54, 36.27, 36.23\} (`coefficient 0.955, p-value 0.045`), indicating that lower average fidelity corresponds to improved predictive accuracy. The optimal MAE/RMSE performance is achieved at *#agent* =32 while $\epsilon_{\text{avg}}$ is minimized, followed by a slight degradation due to layer interactions that enhance feature diversity. **Nonetheless, all errors remain bounded below 0.75 across configurations, confirming that the approximation suffices for downstream forecasting while enabling scalability.**
 
@@ -59,7 +63,7 @@ FaST is designed for datasets with **pronounced spatial redundancy** (e.g., traf
 
 **Quantifying Spatial Redundancy via Cosine Similarity.**
 
-To operationalize applicability, we compute node-pair similarity on concatenated sequences (historical $T$ steps + ground-truth future $P$ steps), thereby capturing the full dynamics. For a dataset with $N$ nodes, at each time $t$ (sampled over $M$ windows), form sequences $\bf{s}_i^{(t)} = [\bf{x}_{t-T+1,i}, \dots, \bf{x}_{t,i}; \bf{x}_{t+1,i}, \dots, \bf{x}_{t+P,i}] \in R^{T+P}$ (normalized to zero-mean unit-variance). Cosine similarity between nodes $i,j$:
+To operationalize applicability, we compute node-pair similarity on concatenated sequences (historical $T$ steps + ground-truth future $P$ steps), thereby capturing the full dynamics. For a dataset with $N$ nodes, at each time $t$ (sampled over $M$ windows), form sequences $\mathbf{s}_i^{(t)} = [\mathbf{x}_{t-T+1,i}, \dots, \mathbf{x}_{t,i}; \mathbf{x}_{t+1,i}, \dots, \mathbf{x}_{t+P,i}] \in R^{T+P}$ (normalized to zero-mean unit-variance). Cosine similarity between nodes $i,j$:
 
 $$
 S_{ij}^{(t)} = \frac{\bf{s}_i^{(t)} \cdot \bf{s}_j^{(t)}}{\|\bf{s}_i^{(t)}\|_2 \|\bf{s}_j^{(t)}\|_2} = \frac{\sum_{k=1}^{T+P} s_{i,k}^{(t)} s_{j,k}^{(t)}}{\sqrt{\sum_{k=1}^{T+P} (s_{i,k}^{(t)})^2} \sqrt{\sum_{k=1}^{T+P} (s_{j,k}^{(t)})^2}}
