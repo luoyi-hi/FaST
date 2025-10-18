@@ -1,7 +1,7 @@
 # FaST
 
 
-![Figure 1](./src/model.jpg)
+![Figure 1](./model.jpg)
 
 **Figure 2. Architecture of FaST.** **① Input Layer:** The heterogeneity-aware MoE module (HA-MoE) assigns expert scores via the heterogeneity-aware router and integrates parallelized GLU expert features, converting input sequences into dense feature vectors. These features are subsequently enhanced with adaptive spatial and temporal embeddings. **② Network Backbone:** Composed of stacked residual blocks. Each block utilizes the Adaptive Graph Agent Attention (AGA-Att) module to aggregate node features into a small number of adaptive agent tokens, redistributing them to nodes, followed by residual addition and normalization. Then, the HA-MoE module integrates expert outputs, followed by residual addition and normalization. This block leverages AGA-Att's low-rank approximation of pairwise interactions and HA-MoE enhancement to efficiently capture diverse spatiotemporal patterns. **③ Prediction Layer:** Outputs from all layers are concatenated and input into a multi-layer perceptron (MLP) predictor to generate prediction results.
 
