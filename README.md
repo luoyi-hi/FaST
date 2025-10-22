@@ -62,14 +62,14 @@ Table 2 reports reconstruction errors were computed on the SD dataset (96 => 48)
   <b>Table&nbsp;2</b> Reconstruction errors on the SD dataset (96 => 48).
 </p>
 
-| agent | 16    | 32    | 64    | 128   |
-|-|-|-|-|-|
-| $\epsilon^1 (l=1)$ | 0.611 | 0.512 | 0.488 | 0.484 |
-| $\epsilon^2 (l=2)$ | 0.617 | 0.685 | 0.726 | 0.755 |
-| $\epsilon^3 (l=3)$ | 0.652 | 0.663 | 0.677 | 0.665 |
-| $\epsilon_{\text{avg}}$   | 0.627 | 0.620 | 0.630 | 0.635 |
-| MAE   | 19.75 | 19.37 | 20.02 | 19.87 |
-| RMSE  | 35.22 | 34.54 | 36.27 | 36.23 |
+| agent                   | 16    | 32    | 64    | 128   |
+| ----------------------- | ----- | ----- | ----- | ----- |
+| $\epsilon^1 (l=1)$      | 0.611 | 0.512 | 0.488 | 0.484 |
+| $\epsilon^2 (l=2)$      | 0.617 | 0.685 | 0.726 | 0.755 |
+| $\epsilon^3 (l=3)$      | 0.652 | 0.663 | 0.677 | 0.665 |
+| $\epsilon_{\text{avg}}$ | 0.627 | 0.620 | 0.630 | 0.635 |
+| MAE                     | 19.75 | 19.37 | 20.02 | 19.87 |
+| RMSE                    | 35.22 | 34.54 | 36.27 | 36.23 |
 
 ---
 ### 1.3 Extensions to Other Fields
@@ -99,7 +99,7 @@ Similar to traffic data, power demand datasets often exhibit high spatial redund
 ---
 ### 1.4 Statistics on Traffic Datasets
 
-The dataset statistics are summarized in **Table 1**.
+The dataset statistics are summarized in **Table 3**.
 
 <p align="center"><b>Table&nbsp;3</b> Dataset statistics.</p>
 
@@ -122,7 +122,7 @@ Such disparities arise from differences in road design, speed limits, and access
 </p>
 <p align="center"><b>Figure&nbsp;2</b> Impact of Highway Types and Lane Numbers on Traffic Flow [1].</p>
 
-> For more dataset details, refer to [4].
+> For more dataset details, refer to [1].
 > 
 > [1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. *LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting*. In NeurIPS 2023.
 
