@@ -122,9 +122,9 @@ Such disparities arise from differences in road design, speed limits, and access
 </p>
 <p align="center"><b>Figure&nbsp;2</b> Impact of Highway Types and Lane Numbers on Traffic Flow [1].</p>
 
-> For more dataset details, refer to [1].
+> For more dataset details, refer to [4].
 > 
-> [1] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. *LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting*. In NeurIPS 2023.
+> [4] Xu Liu, Yutong Xia, Yuxuan Liang, Junfeng Hu, Yiwei Wang, Lei Bai, Chao Huang, Zhenguang Liu, Bryan Hooi, and Roger Zimmermann. 2023. *LargeST: A Benchmark Dataset for Large-Scale Traffic Forecasting*. In NeurIPS 2023.
 
 
 ---
