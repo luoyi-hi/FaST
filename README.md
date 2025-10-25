@@ -120,7 +120,7 @@ Such disparities arise from differences in road design, speed limits, and access
 <p align="center">
   <img src="src/Distribution.png" width="100%">
 </p>
-<p align="center"><b>Figure&nbsp;2</b> Impact of Highway Types and Lane Numbers on Traffic Flow [1].</p>
+<p align="center"><b>Figure&nbsp;2</b> Impact of Highway Types and Lane Numbers on Traffic Flow [4].</p>
 
 > For more dataset details, refer to [4].
 > 
