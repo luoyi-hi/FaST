@@ -325,7 +325,7 @@ bash script/SGP.sh
 
 # RPMixer
 # Please refer to: ‘https://sites.google.com/view/rpmixer’ to configure the relevant environment
-bash script/SGP.sh
+bash script/RPMixer.sh
 
 ```
 
