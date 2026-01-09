@@ -1,11 +1,10 @@
-# FaST
+<div align="center">
 
+# FaST: Efficient and Effective Long-Horizon Forecasting for Large-Scale Spatial-Temporal Graphs via Mixture-of-Experts
 
-![Figure 1](./model.jpg)
+[![preprint](https://img.shields.io/static/v1?label=FaST-Paper&message=2403.07815&color=B31B1B&logo=arXiv)](https://arxiv.org/abs/2601.05174v1)
 
-**Figure 2. Architecture of FaST.** **① Input Layer:** The heterogeneity-aware MoE module (HA-MoE) assigns expert scores via the heterogeneity-aware router and integrates parallelized GLU expert features, converting input sequences into dense feature vectors. These features are subsequently enhanced with adaptive spatial and temporal embeddings. **② Network Backbone:** Composed of stacked residual blocks. Each block utilizes the Adaptive Graph Agent Attention (AGA-Att) module to aggregate node features into a small number of adaptive agent tokens, redistributing them to nodes, followed by residual addition and normalization. Then, the HA-MoE module integrates expert outputs, followed by residual addition and normalization. This block leverages AGA-Att's low-rank approximation of pairwise interactions and HA-MoE enhancement to efficiently capture diverse spatiotemporal patterns. **③ Prediction Layer:** Outputs from all layers are concatenated and input into a multi-layer perceptron (MLP) predictor to generate prediction results.
-
-
+</div>
 
 ## 1. Experimental Details
 
