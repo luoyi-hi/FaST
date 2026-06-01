@@ -3,7 +3,6 @@
 # FaST: Efficient and Effective Long-Horizon Forecasting for Large-Scale Spatial-Temporal Graphs via Mixture-of-Experts
 
 [![preprint](https://img.shields.io/static/v1?label=FaST-Paper&message=2403.07815&color=B31B1B&logo=arXiv)](https://arxiv.org/abs/2601.05174v1)
-
 [![ACM DL](https://img.shields.io/static/v1?label=KDD%202026&message=ACM%20DL&color=0052CC&logo=acm)](https://doi.org/10.1145/3770854.3780165)
 
 </div>
